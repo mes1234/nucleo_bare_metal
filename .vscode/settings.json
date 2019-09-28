@@ -1,4 +1,10 @@
 {
     "python.pythonPath": "pyocd/bin/python3",
-    "C_Cpp.default.includePath": ["lib/**"]
+    "C_Cpp.default.includePath": [
+        "lib/**",
+        "/home/witek/CODE/arm/gnu/lib/gcc/arm-none-eabi/8.3.1/include/**"
+    ],
+    "files.associations": {
+        "stm32f10x.h": "c"
+    }
 }
