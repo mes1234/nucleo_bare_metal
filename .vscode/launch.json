@@ -9,7 +9,7 @@
             "request": "launch",
             "servertype": "pyocd",
             "cwd": "${workspaceRoot}",
-            "executable": "main.elf",
+            "executable": "exec/main.elf",
             "name": "Debug (pyOCD)",
             "device": "STM32F103RB",
             "targetId": "",
