@@ -37,7 +37,7 @@ reset_handler:
   MOVS r0, #0
   main_loop:
     // Add 1 to register 'r0'.
-    ADDS r0, r0, #1
+    ADDS r0, r0, #10
     // Loop back.
     B    main_loop
 .size reset_handler, .-reset_handler
