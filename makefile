@@ -1,5 +1,5 @@
 
-build_debug: src/main.c startup/startup.s startup/stm32.ld clean
+build_debug: startup/startup.s startup/stm32.ld clean
 	@echo
 	@echo "Build debug image"
 	arm-none-eabi-as -mcpu=cortex-m3 -mthumb -o obj/startup.o startup/startup.s
