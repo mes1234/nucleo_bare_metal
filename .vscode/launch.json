@@ -14,7 +14,7 @@
             "device": "STM32F103RB",
             "targetId": "",
             "boardId": "",
-            "showDevDebugOutput": false,
+            "showDevDebugOutput": true,
             "svdFile": "svd/STM32F103.svd"
         }
     ]
