@@ -15,7 +15,7 @@
             "targetId": "",
             "boardId": "",
             "showDevDebugOutput": true,
-            "svdFile": "svd/STM32F100.svd",
+            "svdFile": "svd/STM32F103.svd",
             "preLaunchTask": "build",
         }
     ]
