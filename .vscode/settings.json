@@ -5,6 +5,7 @@
         "/home/witek/CODE/arm/gnu/lib/gcc/arm-none-eabi/8.3.1/include/**"
     ],
     "files.associations": {
-        "stm32f10x.h": "c"
+        "stm32f10x.h": "c",
+        "stdint.h": "c"
     }
 }
