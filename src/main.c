@@ -14,7 +14,7 @@ int main(void) {
     //    It should be set to push-pull low-speed output.
     GPIOA->CRL =  GPIO_CRL_MODE;
     // GPIOA->CRH  |=  GPIO_CRH_MODE;
-    GPIOA->ODR =0x000ffff;
+   GPIOA->ODR =0x000ffff;
   int val = 0;
   int state =0;
   while (1) {
