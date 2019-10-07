@@ -1,28 +1,39 @@
 #include <stdint.h>
-#define STM32F10X_MD
+
+void assert_param()
+{
+return;
+}
+
+void _exit(int status)
+{
+while (1) {}
+}
+#include "stm32f10x_gpio.h"
 #include "stm32f10x.h"
 
 // Define GPIOB pin mappings for our LED and button.
 #define BUTTON_PIN (1) //PC13 PIN2
 #define LED_PIN    (5) //PA5 
+
+
+
 /* Main program. */
 int main(void) {
-    // Enable the GPIOB peripheral in 'RCC_AHBENR'.
-    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN ; //enable clock for port A
+  GPIO_InitTypeDef GPIO_InitStructure;
 
-    // B3 is connected to an LED on the 'Nucleo' board.
-    //    It should be set to push-pull low-speed output.
-    GPIOA->CRL =  GPIO_CRL_MODE;
-    // GPIOA->CRH  |=  GPIO_CRH_MODE;
-    GPIOA->ODR =0x000ffff;
+  GPIO_StructInit(&GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_Init(GPIOA,&GPIO_InitStructure);
+
   int val = 0;
-  int state =0;
   while (1) {
     val += 1;
     if (val>32000)
     {
-       state = GPIOA->ODR;
-       GPIOA->ODR= ~state ; 
        val =0;
     }
   }
