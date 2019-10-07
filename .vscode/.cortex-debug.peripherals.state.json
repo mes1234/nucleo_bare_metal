@@ -1,1 +1,1 @@
-[{"node":"AFIO","expanded":true,"format":0},{"node":"GPIOA","expanded":true,"format":0},{"node":"WWDG","expanded":true,"format":0}]
+[{"node":"GPIOA","expanded":true,"format":0},{"node":"GPIOA.IDR","expanded":true,"format":0},{"node":"WWDG","expanded":true,"format":0}]

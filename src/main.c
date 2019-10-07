@@ -32,8 +32,10 @@ int main(void) {
   int val = 0;
   while (1) {
     val += 1;
+    GPIO_WriteBit(GPIOA,GPIO_Pin_5,Bit_SET);
     if (val>32000)
     {
+      GPIO_WriteBit(GPIOA,GPIO_Pin_5,Bit_RESET);
        val =0;
     }
   }
