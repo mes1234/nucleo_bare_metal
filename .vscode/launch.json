@@ -15,7 +15,24 @@
             "targetId": "",
             "boardId": "",
             "showDevDebugOutput": true,
-            "svdFile": "svd/STM32F103.svd"
+            "svdFile": "svd/STM32F103.svd",
+            "preLaunchTask": "build",
+        },
+        {
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceRoot}",
+            "executable": "exec/main.elf",
+            "name": "Debug (OpenOCD)",
+            "device": "STM32F103RB",
+            "configFiles": [
+                "board/st_nucleo_f103rb.cfg"
+            ],
+            "svdFile": "svd/STM32F103.svd",
+            "preLaunchTask": "build",
+            "runToMain":true,
+            "showDevDebugOutput": true
         }
     ]
 }

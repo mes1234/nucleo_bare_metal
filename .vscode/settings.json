@@ -1,3 +1,14 @@
 {
-    "python.pythonPath": "pyocd/bin/python3"
+    "python.pythonPath": "pyocd/bin/python3",
+    "C_Cpp.default.includePath": [
+        "lib/**",
+        "/home/witek/CODE/arm/gnu/lib/gcc/arm-none-eabi/8.3.1/include/**",
+        "/home/witek/CODE/arm/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/**"
+    ],
+    "files.associations": {
+        "stm32f10x.h": "c",
+        "stm32f10x_gpio.h": "c",
+        "stm32f10x_tim.h": "c",
+        "core_cm3.h": "c"
+    }
 }
