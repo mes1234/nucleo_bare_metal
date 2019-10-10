@@ -13,9 +13,11 @@ while (1) {}
 #include "stm32f10x_tim.h"
 #include "stm32f10x_rcc.h"
 #include "stm32f10x.h"
+#include "core_cm3.h"
 
 /* Main program. */
 int main(void) {
+  SystemInit();
   RCC_APB2PeriphClockCmd ( RCC_APB2Periph_GPIOA, ENABLE );
   GPIO_InitTypeDef GPIO_InitStructure;
 
