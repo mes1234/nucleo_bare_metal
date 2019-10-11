@@ -24,6 +24,7 @@ build_debug: clean
 	arm-none-eabi-gcc -c -O0 $(INCLUDES) -DSTM32F10X_MD -ggdb  -mcpu=cortex-m3 -mthumb  $(CORE)/core_cm3.c -o obj/core_cm3.o
 	arm-none-eabi-gcc -c -O0 $(INCLUDES) -DSTM32F10X_MD -ggdb  -mcpu=cortex-m3 -mthumb  src/main.c -o obj/main.o
 	arm-none-eabi-gcc -c -O0 $(INCLUDES) -DSTM32F10X_MD -ggdb  -mcpu=cortex-m3 -mthumb  src/service_call.c -o obj/service_call.o
+	arm-none-eabi-gcc -c -O0 $(INCLUDES) -DSTM32F10X_MD -ggdb  -mcpu=cortex-m3 -mthumb  src/setup_stack.c -o obj/setup_stack.o
 	arm-none-eabi-as -mcpu=cortex-m3 -mthumb -o obj/startup.o $(STARTUP)/startup_stm32f10x_md.s
 	arm-none-eabi-ld -Tstartup/stm32.ld -o exec/main.elf obj/*.o
 	arm-none-eabi-objcopy -O binary exec/main.elf exec/main.bin
