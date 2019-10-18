@@ -11,7 +11,7 @@ struct ThreadControlBlock{
     unsigned char threadID;
     uint32_t *taskEntryPoint;
 };
-
+```
 ### Definition of thread state
 ```c
 
@@ -23,7 +23,6 @@ enum threadState {
 };
 ```
 
-```
 ### Array of tasks (threads)
 
 ```c
