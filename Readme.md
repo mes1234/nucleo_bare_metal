@@ -20,7 +20,7 @@ enum threadState {
     RUNNING = 0x01, // prior to executing it should be set
     HALTED  = 0x02, // after switching to another make it halted
     DEAD    = 0x03  // free free slot, not started or completed
-};
+};\
 ```
 
 ### Array of tasks (threads)
