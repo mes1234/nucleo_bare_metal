@@ -1,3 +1,3 @@
-#define SVC(code) asm volatile ("svc %0" : : "I" (code) )
-
-typedef void (*svcall_t)(void*);
+void task1();
+void task2();
+void setupLED();
