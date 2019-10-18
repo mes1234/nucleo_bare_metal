@@ -6,10 +6,8 @@
 ```c
 struct ThreadControlBlock{
     uint32_t *stackPointer;
-    unsigned short int stacksize;
     enum threadState state;
-    unsigned char threadID;
-    uint32_t *taskEntryPoint;
+    uint32_t *entryPoint;
 };
 ```
 ### Definition of thread state
