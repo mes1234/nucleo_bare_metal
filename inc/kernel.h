@@ -1,8 +1,9 @@
 #include <stdint.h>
 #define SVC(code) asm volatile ("svc %0" : : "I" (code) )
 #define USE_PSP_IN_THREAD_MODE (1<<1)
-#define THREAD_COUNT_MAX 10
-#define PSP_SIZE 0x200
+#define THREAD_COUNT_MAX 3
+#define PSP_SIZE 0x1000
+
 void load_software_context();
 
 void save_software_context();
@@ -25,5 +26,8 @@ typedef struct {
     enum threadState state;
     uint32_t *entryPoint;
 }ThreadControlBlock;
+
+extern ThreadControlBlock threads[THREAD_COUNT_MAX];
+uint32_t i;
 
 void SetupKernel();

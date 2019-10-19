@@ -26,11 +26,11 @@ ThreadControlBlock threads[THREAD_COUNT_MAX];
 int main(void)
 {
   SystemInit();
-  SetupKernel(threads);
+  SetupKernel();
   setupLED();
-  CreateTask(threads,task1);
-  CreateTask(threads,task2);
-  RunOS(threads);
+  CreateTask(task1);
+  CreateTask(task2);
+  RunOS();
 }
 
 void setupLED()
