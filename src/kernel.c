@@ -6,9 +6,8 @@
 #include "core_cm3.h"
 #include "kernel.h"
 
-uint32_t ready_to_Switch =0;
-uint32_t halted_id =0;
-
+uint32_t ready_to_Switch = 0;
+uint32_t halted_id = 0;
 
 void save_software_context()
 {
@@ -70,6 +69,7 @@ void CreateTask(void *taskPointer)
 
 void RunOS()
 {
+    current_task_ID = 0;
     StartFirstTask();
 }
 
@@ -104,6 +104,7 @@ void InitThreads()
     {
         new_psp = current_msp - (i + 1) * PSP_SIZE;
         threads[i].stackPointer = new_psp;
+        threads[i].stackPointerAddr = threads[i].stackPointer;
         threads[i].state = DEAD;
     }
 }
@@ -115,6 +116,11 @@ void InitSysTick(uint32_t freq)
 
 void SysTick_Handler(void)
 {
+    next_task_ID = current_task_ID + 1;
+    if (next_task_ID == THREAD_COUNT_MAX)
+    {
+        next_task_ID = 0;
+    }
     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 }
 
@@ -125,42 +131,20 @@ void InitPendSv(void)
 
 void PendSV_Handler(void)
 {
-
-    for (i = 0; i < THREAD_COUNT_MAX; i++)
+    // save current task and halt it
+    save_software_context();
+    threads[current_task_ID].state = HALTED;
+    threads[current_task_ID].stackPointer = __get_PSP();
+    threads[current_task_ID].stackPointerAddr = __get_PSP();
+    current_task_ID=next_task_ID;
+    // if next is new start new
+    if (threads[current_task_ID].state == NEW)
     {
-        if (threads[i].state == RUNNING)
-        {
-            save_software_context();
-            threads[i].state == HALTED;
-            threads[i].stackPointer == __get_PSP();
-            ready_to_Switch = 1;
-            halted_id = i;
-        }
-        if (ready_to_Switch == 1)
-        {
-            if (threads[i].state == NEW)
-            {
-                threads[i].state = RUNNING;
-                __set_PSP(threads[i].stackPointer);
-                asm volatile("MSR control, %0"
-                             :
-                             : "r"(USE_PSP_IN_THREAD_MODE));
-                asm volatile("MOV lr, %0"
-                             :
-                             : "r"(threads[i].entryPoint));
-                asm volatile("bx lr 		    \n");
-            }
-            if(threads[i].state == HALTED)
-            {
-               threads[i].state == RUNNING;
-               __set_PSP(threads[i].stackPointer);
-               load_software_context();
-               asm volatile("MSR control, %0"
-                             :
-                             : "r"(USE_PSP_IN_THREAD_MODE));
-                asm volatile("bx lr 		    \n");
-            }
-        }
+        threads[current_task_ID].state = RUNNING;
+        __set_PSP(threads[current_task_ID].stackPointer);
+        asm volatile("MOV lr, %0"
+                     :
+                     : "r"(threads[current_task_ID].entryPoint));
+        asm volatile("bx lr 		    \n");
     }
-    // load_software_context();
 }

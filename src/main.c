@@ -75,6 +75,7 @@ void task2()
       value = ~value;
       GPIO_WriteBit(GPIOA, GPIO_Pin_5, value);
       val = 0;
+      SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
     }
   }
 }
