@@ -19,7 +19,6 @@ void _exit(int status)
 #include "kernel.h"
 #include "main.h"
 
-
 ThreadControlBlock threads[THREAD_COUNT_MAX];
 
 /* Main program. */
@@ -31,6 +30,9 @@ int main(void)
   CreateTask(task1);
   CreateTask(task2);
   RunOS();
+  while (1)
+  {
+  }
 }
 
 void setupLED()
@@ -43,8 +45,6 @@ void setupLED()
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
-
-
 
 void task1()
 {

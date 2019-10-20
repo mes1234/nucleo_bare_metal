@@ -9,22 +9,6 @@
 uint32_t ready_to_Switch = 0;
 uint32_t halted_id = 0;
 
-void save_software_context()
-{
-    // save the stack pointer in r0
-    //Copy the values of r4-r11 in the stack and
-    // decrement the stack pointer (r0)
-    asm volatile("MRS   r0,  psp      \n\t"
-                 "STMDB r0!, {r4-r11} \n\t");
-}
-
-void load_software_context()
-{
-    // Recover the registers r4-r11 from the stack and
-    // increment the stack pointer (r0)
-    asm volatile("LDMIA r0!, {r4-r11}  \n\t");
-}
-
 void setup_new_psp(uint32_t offset_from_msp)
 {
 
@@ -35,22 +19,8 @@ void setup_new_psp(uint32_t offset_from_msp)
 
 void SetupKernel()
 {
+    SCB->CCR |= SCB_CCR_STKALIGN_Msk; // Enable double word stack
     InitThreads();
-    InitPendSv();
-    InitSysTick(1000);
-}
-
-void StartTask(void *taskPointer)
-{
-    asm volatile("mov r12, lr 		    \n");
-    asm volatile("MSR control, %0"
-                 :
-                 : "r"(USE_PSP_IN_THREAD_MODE));
-    threads->entryPoint = taskPointer;
-    asm volatile("MOV lr, %0"
-                 :
-                 : "r"(taskPointer));
-    asm volatile("bx lr 		    \n");
 }
 
 void CreateTask(void *taskPointer)
@@ -69,36 +39,17 @@ void CreateTask(void *taskPointer)
 
 void RunOS()
 {
+    InitPendSv();
+    InitSysTick(10);
     current_task_ID = 0;
-    StartFirstTask();
-}
-
-void StartFirstTask()
-{
-
-    for (i = 0; i < THREAD_COUNT_MAX; i++)
-    {
-        if (threads[i].state == NEW)
-        {
-            threads[i].state = RUNNING;
-            __set_PSP(threads[i].stackPointer);
-            asm volatile("MSR control, %0"
-                         :
-                         : "r"(USE_PSP_IN_THREAD_MODE));
-            asm volatile("MOV lr, %0"
-                         :
-                         : "r"(threads[i].entryPoint));
-            asm volatile("bx lr 		    \n");
-        }
-    }
+    __set_CONTROL(0x3);
+    __ISB();
 }
 
 void InitThreads()
 {
     uint32_t current_msp = __get_MSP();
     uint32_t new_psp;
-    // uint32_t *psp_pointer = new_psp;
-    // uint32_t *msp_pointer = current_msp;
 
     for (i = 0; i < THREAD_COUNT_MAX; i++)
     {
@@ -111,6 +62,9 @@ void InitThreads()
 
 void InitSysTick(uint32_t freq)
 {
+    // RCC_ClocksTypeDef RCC_Clocks;
+    // RCC_GetClocksFreq(&RCC_Clocks);
+    // (void)SysTick_Config(RCC_Clocks.HCLK_Frequency / freq);
     uint32_t status = SysTick_Config(SystemCoreClock / freq);
 }
 
@@ -121,7 +75,8 @@ void SysTick_Handler(void)
     {
         next_task_ID = 0;
     }
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+    PendSV_Handler();
+    // SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 }
 
 void InitPendSv(void)
@@ -132,19 +87,78 @@ void InitPendSv(void)
 void PendSV_Handler(void)
 {
     // save current task and halt it
-    save_software_context();
-    threads[current_task_ID].state = HALTED;
-    threads[current_task_ID].stackPointer = __get_PSP();
-    threads[current_task_ID].stackPointerAddr = __get_PSP();
-    current_task_ID=next_task_ID;
+    // save the stack pointer in r0
+    //Copy the values of r4-r11 in the stack and
+    // decrement the stack pointer (r0)
+    if (threads[current_task_ID].state == RUNNING)
+    {
+        asm volatile("MRS   r0,  psp      \n\t"
+                     "STMDB r0!, {r4-r11} \n\t");
+        threads[current_task_ID].state = HALTED;
+        threads[current_task_ID].stackPointer = __get_PSP();
+        threads[current_task_ID].stackPointerAddr = __get_PSP();
+        current_task_ID = next_task_ID;
+    }
     // if next is new start new
     if (threads[current_task_ID].state == NEW)
     {
         threads[current_task_ID].state = RUNNING;
-        __set_PSP(threads[current_task_ID].stackPointer);
+        asm volatile("msr psp, %0"
+                     :
+                     : "r"(threads[current_task_ID].stackPointer));
+        asm volatile("MSR control, %0"
+                       :
+                       : "r"(0x3));
+        __ISB();
         asm volatile("MOV lr, %0"
                      :
                      : "r"(threads[current_task_ID].entryPoint));
-        asm volatile("bx lr 		    \n");
+        asm volatile("bx lr \n");
+    }
+    if (threads[current_task_ID].state == HALTED)
+    {
+        threads[current_task_ID].state = RUNNING;
+        asm volatile("msr psp, %0"
+                     :
+                     : "r"(threads[current_task_ID].stackPointer));
+        asm volatile("LDMIA r0!, {r4-r11}  \n\t");
+        asm volatile("bx lr \n");
     }
 }
+
+// // ------------------------------------------------------------
+// __asm void PendSV_Handler(void)
+// { // Context switching code
+// // Simple version - assume No floating point support
+// // -------------------------
+// // Save current context
+// MRS
+// STMDB R0, PSP
+// R0!,{R4-R11}
+// // Get current process stack pointer value
+// // Save R4 to R11 in task stack (8 regs)
+// LDR R1,=__cpp(&curr_task)
+// LDR R2,[R1]
+// LDR R3,=__cpp(&PSP_array)
+// STR R0,[R3, R2, LSL #2]
+// // Get current task ID
+// // Save PSP value into PSP_array
+// // -------------------------
+// // Load next context
+// LDR
+// LDR R4,=__cpp(&next_task)
+// R4,[R4]
+// // Get next task ID
+// STR R4,[R1]
+// LDR R0,[R3, R4, LSL #2] // Load PSP value from PSP_array
+// LDMIA R0!,{R4-R11}
+// MSR PSP, R0
+// // Set PSP to next task
+// BX LR
+// // Return
+// ALIGN 4
+// // Set curr_task = next_task
+// // Load R4 to R11 from task
+// stack (8 regs)
+// }
+// // ------------------------------------------------------------
