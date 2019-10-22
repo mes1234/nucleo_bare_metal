@@ -485,28 +485,10 @@ SysTick_Handler:
 	.cfi_offset 14, -4
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
-	.loc 2 57 36
-	ldr	r3, .L33
-	ldr	r3, [r3]
-	adds	r3, r3, #1
-	.loc 2 57 18
-	ldr	r2, .L33+4
-	str	r3, [r2]
-	.loc 2 58 22
-	ldr	r3, .L33+4
-	ldr	r3, [r3]
-	.loc 2 58 8
-	cmp	r3, #3
-	bne	.L28
-	.loc 2 60 22
-	ldr	r3, .L33+4
-	movs	r2, #0
-	str	r2, [r3]
-.L28:
-	.loc 2 62 33
-	ldr	r3, .L33
+	.loc 2 55 33
+	ldr	r3, .L34
 	ldr	r2, [r3]
-	ldr	r1, .L33+8
+	ldr	r1, .L34+4
 	mov	r3, r2
 	lsls	r3, r3, #1
 	add	r3, r3, r2
@@ -514,23 +496,70 @@ SysTick_Handler:
 	add	r3, r3, r1
 	adds	r3, r3, #4
 	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 62 8
+	.loc 2 55 8
 	cmp	r3, #1
-	bne	.L29
-	.loc 2 64 9
+	bne	.L28
+	.loc 2 57 33
+	ldr	r3, .L34
+	ldr	r4, [r3]
+	.loc 2 57 49
+	bl	__get_PSP
+	mov	r1, r0
+	.loc 2 57 47
+	ldr	r2, .L34+4
+	mov	r3, r4
+	lsls	r3, r3, #1
+	add	r3, r3, r4
+	lsls	r3, r3, #2
+	add	r3, r3, r2
+	str	r1, [r3]
+	.loc 2 58 9
 	.syntax unified
-@ 64 "src/kernel.c" 1
+@ 58 "src/kernel.c" 1
 	MRS   r0,  psp      
 	STMDB r0!, {r4-r11} 
 	
 @ 0 "" 2
-	.loc 2 66 33
 	.thumb
 	.syntax unified
-	ldr	r3, .L33
+.L28:
+	.loc 2 61 36
+	ldr	r3, .L34
+	ldr	r3, [r3]
+	adds	r3, r3, #1
+	.loc 2 61 18
+	ldr	r2, .L34+8
+	str	r3, [r2]
+	.loc 2 62 22
+	ldr	r3, .L34+8
+	ldr	r3, [r3]
+	.loc 2 62 8
+	cmp	r3, #3
+	bne	.L29
+	.loc 2 64 22
+	ldr	r3, .L34+8
+	movs	r2, #0
+	str	r2, [r3]
+.L29:
+	.loc 2 66 33
+	ldr	r3, .L34
 	ldr	r2, [r3]
-	.loc 2 66 40
-	ldr	r1, .L33+8
+	ldr	r1, .L34+4
+	mov	r3, r2
+	lsls	r3, r3, #1
+	add	r3, r3, r2
+	lsls	r3, r3, #2
+	add	r3, r3, r1
+	adds	r3, r3, #4
+	ldrb	r3, [r3]	@ zero_extendqisi2
+	.loc 2 66 8
+	cmp	r3, #1
+	bne	.L30
+	.loc 2 68 33
+	ldr	r3, .L34
+	ldr	r2, [r3]
+	.loc 2 68 40
+	ldr	r1, .L34+4
 	mov	r3, r2
 	lsls	r3, r3, #1
 	add	r3, r3, r2
@@ -539,30 +568,16 @@ SysTick_Handler:
 	adds	r3, r3, #4
 	movs	r2, #2
 	strb	r2, [r3]
-	.loc 2 67 33
-	ldr	r3, .L33
-	ldr	r4, [r3]
-	.loc 2 67 49
-	bl	__get_PSP
-	mov	r1, r0
-	.loc 2 67 47
-	ldr	r2, .L33+8
-	mov	r3, r4
-	lsls	r3, r3, #1
-	add	r3, r3, r4
-	lsls	r3, r3, #2
-	add	r3, r3, r2
-	str	r1, [r3]
-	.loc 2 68 25
-	ldr	r3, .L33+4
+	.loc 2 69 25
+	ldr	r3, .L34+8
 	ldr	r3, [r3]
-	ldr	r2, .L33
+	ldr	r2, .L34
 	str	r3, [r2]
-.L29:
-	.loc 2 70 5
-	ldr	r3, .L33
+.L30:
+	.loc 2 71 5
+	ldr	r3, .L34
 	ldr	r2, [r3]
-	ldr	r1, .L33+8
+	ldr	r1, .L34+4
 	mov	r3, r2
 	lsls	r3, r3, #1
 	add	r3, r3, r2
@@ -571,10 +586,10 @@ SysTick_Handler:
 	ldr	r3, [r3]
 	mov	r0, r3
 	bl	__set_PSP
-	.loc 2 71 33
-	ldr	r3, .L33
+	.loc 2 72 33
+	ldr	r3, .L34
 	ldr	r2, [r3]
-	ldr	r1, .L33+8
+	ldr	r1, .L34+4
 	mov	r3, r2
 	lsls	r3, r3, #1
 	add	r3, r3, r2
@@ -582,14 +597,14 @@ SysTick_Handler:
 	add	r3, r3, r1
 	adds	r3, r3, #4
 	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 71 8
+	.loc 2 72 8
 	cmp	r3, #0
-	bne	.L30
-	.loc 2 73 33
-	ldr	r3, .L33
+	bne	.L31
+	.loc 2 74 33
+	ldr	r3, .L34
 	ldr	r2, [r3]
-	.loc 2 73 40
-	ldr	r1, .L33+8
+	.loc 2 74 40
+	ldr	r1, .L34+4
 	mov	r3, r2
 	lsls	r3, r3, #1
 	add	r3, r3, r2
@@ -598,11 +613,11 @@ SysTick_Handler:
 	adds	r3, r3, #4
 	movs	r2, #1
 	strb	r2, [r3]
-.L30:
-	.loc 2 75 33
-	ldr	r3, .L33
+.L31:
+	.loc 2 76 33
+	ldr	r3, .L34
 	ldr	r2, [r3]
-	ldr	r1, .L33+8
+	ldr	r1, .L34+4
 	mov	r3, r2
 	lsls	r3, r3, #1
 	add	r3, r3, r2
@@ -610,14 +625,14 @@ SysTick_Handler:
 	add	r3, r3, r1
 	adds	r3, r3, #4
 	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 75 8
+	.loc 2 76 8
 	cmp	r3, #2
-	bne	.L32
-	.loc 2 77 33
-	ldr	r3, .L33
+	bne	.L33
+	.loc 2 78 33
+	ldr	r3, .L34
 	ldr	r2, [r3]
-	.loc 2 77 40
-	ldr	r1, .L33+8
+	.loc 2 78 40
+	ldr	r1, .L34+4
 	mov	r3, r2
 	lsls	r3, r3, #1
 	add	r3, r3, r2
@@ -626,24 +641,24 @@ SysTick_Handler:
 	adds	r3, r3, #4
 	movs	r2, #1
 	strb	r2, [r3]
-	.loc 2 78 9
+	.loc 2 79 9
 	.syntax unified
-@ 78 "src/kernel.c" 1
+@ 79 "src/kernel.c" 1
 	LDMIA r0!, {r4-r11}  
 	
 @ 0 "" 2
 	.thumb
 	.syntax unified
-.L32:
-	.loc 2 80 1
+.L33:
+	.loc 2 81 1
 	nop
 	pop	{r3, r4, r7, pc}
-.L34:
+.L35:
 	.align	2
-.L33:
+.L34:
 	.word	current_task_ID
-	.word	next_task_ID
 	.word	threads
+	.word	next_task_ID
 	.cfi_endproc
 .LFE32:
 	.size	SysTick_Handler, .-SysTick_Handler

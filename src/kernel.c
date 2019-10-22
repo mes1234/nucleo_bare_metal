@@ -52,8 +52,12 @@ void InitThreads()
 
 void SysTick_Handler(void)
 {
-    
-
+    if (threads[current_task_ID].state == RUNNING)
+    {
+        threads[current_task_ID].stackPointer = __get_PSP();
+        asm volatile("MRS   r0,  psp      \n\t"
+                     "STMDB r0!, {r4-r11} \n\t");
+    }
     next_task_ID = current_task_ID + 1;
     if (next_task_ID == THREAD_COUNT_MAX)
     {
@@ -61,10 +65,7 @@ void SysTick_Handler(void)
     }
     if (threads[current_task_ID].state == RUNNING)
     {
-        asm volatile("MRS   r0,  psp      \n\t"
-                 "STMDB r0!, {r4-r11} \n\t");
         threads[current_task_ID].state = HALTED;
-        threads[current_task_ID].stackPointer = __get_PSP();
         current_task_ID = next_task_ID;
     }
     __set_PSP(threads[current_task_ID].stackPointer);
