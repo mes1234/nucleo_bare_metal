@@ -1,18 +1,11 @@
 #include <stdint.h>
-#define SVC(code) asm volatile ("svc %0" : : "I" (code) )
-#define USE_PSP_IN_THREAD_MODE (1<<1)
-#define THREAD_COUNT_MAX 2
+
+#define THREAD_COUNT_MAX 3
 #define PSP_SIZE 0x1000
 
-void load_software_context();
-
-void save_software_context();
-
-void setup_new_psp(uint32_t offset_from_msp);
-
-void service_call(void (*func)(void*), void* args);
-
-typedef void (*svcall_t)(void*);
+void InitThreads();
+void SetupKernel();
+void CreateTask(void *taskPointer);
 
 enum threadState{
     NEW,
@@ -20,18 +13,27 @@ enum threadState{
     HALTED,
     DEAD 
 };
-
 typedef struct {
     uint32_t stackPointer;
-    uint32_t *stackPointerAddr;
     enum threadState state;
     uint32_t *entryPoint;
 }ThreadControlBlock;
+
+
+//This defines the stack frame that is saved  by the hardware
+typedef struct {
+  uint32_t r0;
+  uint32_t r1;
+  uint32_t r2;
+  uint32_t r3;
+  uint32_t r12;
+  uint32_t lr;
+  uint32_t pc;
+  uint32_t psr;
+} hw_stack_frame_t;
 
 extern ThreadControlBlock threads[THREAD_COUNT_MAX];
 uint32_t i;
 uint32_t current_task_ID;
 uint32_t next_task_ID;
 
-
-void SetupKernel();

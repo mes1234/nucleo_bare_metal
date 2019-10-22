@@ -25,10 +25,11 @@ ThreadControlBlock threads[THREAD_COUNT_MAX];
 int main(void)
 {
   SystemInit();
-  SetupKernel();
+  InitThreads();
   setupLED();
   CreateTask(task1);
   CreateTask(task2);
+  CreateTask(task3);
   RunOS();
   while (1)
   {
@@ -75,7 +76,23 @@ void task2()
       value = ~value;
       GPIO_WriteBit(GPIOA, GPIO_Pin_5, value);
       val = 0;
-      SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+    }
+  }
+}
+
+void task3()
+{
+  int val = 0;
+  int value = 0;
+  while (1)
+  {
+
+    val += 1;
+    if (val > 102000)
+    {
+      value = ~value;
+      GPIO_WriteBit(GPIOA, GPIO_Pin_5, value);
+      val = 0;
     }
   }
 }
