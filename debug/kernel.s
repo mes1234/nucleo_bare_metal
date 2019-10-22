@@ -198,53 +198,41 @@ CreateTask:
 .L16:
 	.loc 2 14 23
 	ldr	r3, .L17
-	ldr	r2, [r3]
-	ldr	r1, .L17+4
-	mov	r3, r2
-	lsls	r3, r3, #1
+	ldr	r3, [r3]
+	ldr	r2, .L17+4
+	lsls	r3, r3, #4
 	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
-	adds	r3, r3, #4
+	adds	r3, r3, #8
 	ldrb	r3, [r3]	@ zero_extendqisi2
 	.loc 2 14 12
 	cmp	r3, #3
 	bne	.L14
 	.loc 2 16 23
 	ldr	r3, .L17
-	ldr	r2, [r3]
+	ldr	r3, [r3]
 	.loc 2 16 30
-	ldr	r1, .L17+4
-	mov	r3, r2
-	lsls	r3, r3, #1
+	ldr	r2, .L17+4
+	lsls	r3, r3, #4
 	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
-	adds	r3, r3, #4
+	adds	r3, r3, #8
 	movs	r2, #0
 	strb	r2, [r3]
 	.loc 2 17 23
 	ldr	r3, .L17
-	ldr	r2, [r3]
+	ldr	r3, [r3]
 	.loc 2 17 35
-	ldr	r1, .L17+4
-	mov	r3, r2
-	lsls	r3, r3, #1
+	ldr	r2, .L17+4
+	lsls	r3, r3, #4
 	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
-	adds	r3, r3, #8
+	adds	r3, r3, #12
 	ldr	r2, [r7, #4]
 	str	r2, [r3]
 	.loc 2 18 60
 	ldr	r3, .L17
-	ldr	r2, [r3]
-	ldr	r1, .L17+4
-	mov	r3, r2
-	lsls	r3, r3, #1
+	ldr	r3, [r3]
+	ldr	r2, .L17+4
+	lsls	r3, r3, #4
 	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
 	ldr	r3, [r3]
 	.loc 2 18 27
 	str	r3, [r7, #12]
@@ -338,16 +326,11 @@ RunOS:
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
 	.loc 2 34 23
-	ldr	r3, .L20
-	ldr	r3, [r3]
-	ldr	r2, .L20+4
-	umull	r2, r3, r2, r3
-	lsrs	r3, r3, #6
-	mov	r0, r3
+	ldr	r0, .L20
 	bl	SysTick_Config
 	str	r0, [r7, #4]
 	.loc 2 35 21
-	ldr	r3, .L20+8
+	ldr	r3, .L20+4
 	movs	r2, #0
 	str	r2, [r3]
 	.loc 2 36 5
@@ -364,8 +347,7 @@ RunOS:
 .L21:
 	.align	2
 .L20:
-	.word	SystemCoreClock
-	.word	274877907
+	.word	196607
 	.word	current_task_ID
 	.cfi_endproc
 .LFE30:
@@ -412,27 +394,39 @@ InitThreads:
 	str	r3, [r7]
 	.loc 2 48 19 discriminator 3
 	ldr	r3, .L25
-	ldr	r2, [r3]
+	ldr	r3, [r3]
 	.loc 2 48 33 discriminator 3
-	ldr	r1, .L25+4
-	mov	r3, r2
-	lsls	r3, r3, #1
+	ldr	r2, .L25+4
+	lsls	r3, r3, #4
 	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
 	ldr	r2, [r7]
 	str	r2, [r3]
+	.loc 2 49 48 discriminator 3
+	ldr	r3, .L25
+	ldr	r3, [r3]
+	ldr	r2, .L25+4
+	lsls	r3, r3, #4
+	add	r3, r3, r2
+	ldr	r2, [r3]
 	.loc 2 49 19 discriminator 3
 	ldr	r3, .L25
-	ldr	r2, [r3]
-	.loc 2 49 26 discriminator 3
-	ldr	r1, .L25+4
-	mov	r3, r2
-	lsls	r3, r3, #1
+	ldr	r3, [r3]
+	.loc 2 49 48 discriminator 3
+	mov	r1, r2
+	.loc 2 49 36 discriminator 3
+	ldr	r2, .L25+4
+	lsls	r3, r3, #4
 	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
 	adds	r3, r3, #4
+	str	r1, [r3]
+	.loc 2 50 19 discriminator 3
+	ldr	r3, .L25
+	ldr	r3, [r3]
+	.loc 2 50 26 discriminator 3
+	ldr	r2, .L25+4
+	lsls	r3, r3, #4
+	add	r3, r3, r2
+	adds	r3, r3, #8
 	movs	r2, #3
 	strb	r2, [r3]
 	.loc 2 45 40 discriminator 3
@@ -448,7 +442,7 @@ InitThreads:
 	.loc 2 45 5 discriminator 1
 	cmp	r3, #2
 	bls	.L24
-	.loc 2 51 1
+	.loc 2 52 1
 	nop
 	adds	r7, r7, #8
 	.cfi_def_cfa_offset 8
@@ -473,49 +467,30 @@ InitThreads:
 	.type	SysTick_Handler, %function
 SysTick_Handler:
 .LFB32:
-	.loc 2 54 1
+	.loc 2 55 1
 	.cfi_startproc
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
-	push	{r3, r4, r7, lr}
-	.cfi_def_cfa_offset 16
-	.cfi_offset 3, -16
-	.cfi_offset 4, -12
+	push	{r7, lr}
+	.cfi_def_cfa_offset 8
 	.cfi_offset 7, -8
 	.cfi_offset 14, -4
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
-	.loc 2 55 33
-	ldr	r3, .L34
-	ldr	r2, [r3]
-	ldr	r1, .L34+4
-	mov	r3, r2
-	lsls	r3, r3, #1
-	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
-	adds	r3, r3, #4
-	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 55 8
-	cmp	r3, #1
-	bne	.L28
 	.loc 2 57 33
 	ldr	r3, .L34
-	ldr	r4, [r3]
-	.loc 2 57 49
-	bl	__get_PSP
-	mov	r1, r0
-	.loc 2 57 47
+	ldr	r3, [r3]
 	ldr	r2, .L34+4
-	mov	r3, r4
-	lsls	r3, r3, #1
-	add	r3, r3, r4
-	lsls	r3, r3, #2
+	lsls	r3, r3, #4
 	add	r3, r3, r2
-	str	r1, [r3]
-	.loc 2 58 9
+	adds	r3, r3, #8
+	ldrb	r3, [r3]	@ zero_extendqisi2
+	.loc 2 57 8
+	cmp	r3, #1
+	bne	.L28
+	.loc 2 59 9
 	.syntax unified
-@ 58 "src/kernel.c" 1
+@ 59 "src/kernel.c" 1
 	MRS   r0,  psp      
 	STMDB r0!, {r4-r11} 
 	
@@ -523,136 +498,152 @@ SysTick_Handler:
 	.thumb
 	.syntax unified
 .L28:
-	.loc 2 61 36
+	.loc 2 64 36
 	ldr	r3, .L34
 	ldr	r3, [r3]
 	adds	r3, r3, #1
-	.loc 2 61 18
+	.loc 2 64 18
 	ldr	r2, .L34+8
 	str	r3, [r2]
-	.loc 2 62 22
+	.loc 2 65 22
 	ldr	r3, .L34+8
 	ldr	r3, [r3]
-	.loc 2 62 8
+	.loc 2 65 8
 	cmp	r3, #3
 	bne	.L29
-	.loc 2 64 22
+	.loc 2 67 22
 	ldr	r3, .L34+8
 	movs	r2, #0
 	str	r2, [r3]
 .L29:
-	.loc 2 66 33
+	.loc 2 71 33
 	ldr	r3, .L34
-	ldr	r2, [r3]
-	ldr	r1, .L34+4
-	mov	r3, r2
-	lsls	r3, r3, #1
+	ldr	r3, [r3]
+	ldr	r2, .L34+4
+	lsls	r3, r3, #4
 	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
-	adds	r3, r3, #4
+	adds	r3, r3, #8
 	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 66 8
+	.loc 2 71 8
 	cmp	r3, #1
 	bne	.L30
-	.loc 2 68 33
+	.loc 2 74 53
 	ldr	r3, .L34
-	ldr	r2, [r3]
-	.loc 2 68 40
+	ldr	r3, [r3]
+	.loc 2 73 9
+	.syntax unified
+@ 73 "src/kernel.c" 1
+	mrs r2, psp
+@ 0 "" 2
+	.thumb
+	.syntax unified
 	ldr	r1, .L34+4
-	mov	r3, r2
-	lsls	r3, r3, #1
-	add	r3, r3, r2
-	lsls	r3, r3, #2
+	lsls	r3, r3, #4
 	add	r3, r3, r1
+	str	r2, [r3]
+	.loc 2 76 52
+	bl	__get_PSP
+	mov	r2, r0
+	.loc 2 76 33
+	ldr	r3, .L34
+	ldr	r3, [r3]
+	.loc 2 76 52
+	mov	r1, r2
+	.loc 2 76 50
+	ldr	r2, .L34+4
+	lsls	r3, r3, #4
+	add	r3, r3, r2
 	adds	r3, r3, #4
+	str	r1, [r3]
+	.loc 2 77 33
+	ldr	r3, .L34
+	ldr	r3, [r3]
+	.loc 2 77 40
+	ldr	r2, .L34+4
+	lsls	r3, r3, #4
+	add	r3, r3, r2
+	adds	r3, r3, #8
 	movs	r2, #2
 	strb	r2, [r3]
-	.loc 2 69 25
+	.loc 2 78 25
 	ldr	r3, .L34+8
 	ldr	r3, [r3]
 	ldr	r2, .L34
 	str	r3, [r2]
 .L30:
-	.loc 2 71 5
+	.loc 2 82 33
 	ldr	r3, .L34
-	ldr	r2, [r3]
-	ldr	r1, .L34+4
-	mov	r3, r2
-	lsls	r3, r3, #1
+	ldr	r3, [r3]
+	ldr	r2, .L34+4
+	lsls	r3, r3, #4
 	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
+	adds	r3, r3, #8
+	ldrb	r3, [r3]	@ zero_extendqisi2
+	.loc 2 82 8
+	cmp	r3, #0
+	bne	.L31
+	.loc 2 84 9
+	ldr	r3, .L34
+	ldr	r3, [r3]
+	ldr	r2, .L34+4
+	lsls	r3, r3, #4
+	add	r3, r3, r2
 	ldr	r3, [r3]
 	mov	r0, r3
 	bl	__set_PSP
-	.loc 2 72 33
+	.loc 2 85 33
 	ldr	r3, .L34
-	ldr	r2, [r3]
-	ldr	r1, .L34+4
-	mov	r3, r2
-	lsls	r3, r3, #1
+	ldr	r3, [r3]
+	.loc 2 85 40
+	ldr	r2, .L34+4
+	lsls	r3, r3, #4
 	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
-	adds	r3, r3, #4
-	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 72 8
-	cmp	r3, #0
-	bne	.L31
-	.loc 2 74 33
-	ldr	r3, .L34
-	ldr	r2, [r3]
-	.loc 2 74 40
-	ldr	r1, .L34+4
-	mov	r3, r2
-	lsls	r3, r3, #1
-	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
-	adds	r3, r3, #4
+	adds	r3, r3, #8
 	movs	r2, #1
 	strb	r2, [r3]
 .L31:
-	.loc 2 76 33
+	.loc 2 89 33
 	ldr	r3, .L34
-	ldr	r2, [r3]
-	ldr	r1, .L34+4
-	mov	r3, r2
-	lsls	r3, r3, #1
+	ldr	r3, [r3]
+	ldr	r2, .L34+4
+	lsls	r3, r3, #4
 	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
-	adds	r3, r3, #4
+	adds	r3, r3, #8
 	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 76 8
+	.loc 2 89 8
 	cmp	r3, #2
 	bne	.L33
-	.loc 2 78 33
+	.loc 2 91 9
 	ldr	r3, .L34
-	ldr	r2, [r3]
-	.loc 2 78 40
-	ldr	r1, .L34+4
-	mov	r3, r2
-	lsls	r3, r3, #1
+	ldr	r3, [r3]
+	ldr	r2, .L34+4
+	lsls	r3, r3, #4
 	add	r3, r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r1
-	adds	r3, r3, #4
+	ldr	r3, [r3]
+	mov	r0, r3
+	bl	__set_PSP
+	.loc 2 92 33
+	ldr	r3, .L34
+	ldr	r3, [r3]
+	.loc 2 92 40
+	ldr	r2, .L34+4
+	lsls	r3, r3, #4
+	add	r3, r3, r2
+	adds	r3, r3, #8
 	movs	r2, #1
 	strb	r2, [r3]
-	.loc 2 79 9
+	.loc 2 93 9
 	.syntax unified
-@ 79 "src/kernel.c" 1
+@ 93 "src/kernel.c" 1
 	LDMIA r0!, {r4-r11}  
 	
 @ 0 "" 2
 	.thumb
 	.syntax unified
 .L33:
-	.loc 2 81 1
+	.loc 2 95 1
 	nop
-	pop	{r3, r4, r7, pc}
+	pop	{r7, pc}
 .L35:
 	.align	2
 .L34:
@@ -670,15 +661,15 @@ SysTick_Handler:
 	.file 7 "./inc/kernel.h"
 	.section	.debug_info,"",%progbits
 .Ldebug_info0:
-	.4byte	0x73a
+	.4byte	0x747
 	.2byte	0x4
 	.4byte	.Ldebug_abbrev0
 	.byte	0x4
 	.uleb128 0x1
-	.4byte	.LASF120
-	.byte	0xc
 	.4byte	.LASF121
+	.byte	0xc
 	.4byte	.LASF122
+	.4byte	.LASF123
 	.4byte	.Ltext0
 	.4byte	.Letext0-.Ltext0
 	.4byte	.Ldebug_line0
@@ -1330,11 +1321,11 @@ SysTick_Handler:
 	.byte	0x3
 	.byte	0
 	.uleb128 0x12
-	.byte	0xc
+	.byte	0x10
 	.byte	0x7
 	.byte	0x10
 	.byte	0x9
-	.4byte	0x559
+	.4byte	0x566
 	.uleb128 0xc
 	.4byte	.LASF103
 	.byte	0x7
@@ -1346,126 +1337,124 @@ SysTick_Handler:
 	.4byte	.LASF104
 	.byte	0x7
 	.byte	0x12
-	.byte	0x16
-	.4byte	0x4fd
+	.byte	0xf
+	.4byte	0x566
 	.byte	0x4
 	.uleb128 0xc
 	.4byte	.LASF105
 	.byte	0x7
 	.byte	0x13
-	.byte	0xf
-	.4byte	0x559
+	.byte	0x16
+	.4byte	0x4fd
 	.byte	0x8
+	.uleb128 0xc
+	.4byte	.LASF106
+	.byte	0x7
+	.byte	0x14
+	.byte	0xf
+	.4byte	0x566
+	.byte	0xc
 	.byte	0
 	.uleb128 0x1a
 	.byte	0x4
 	.4byte	0x99
 	.uleb128 0x3
-	.4byte	.LASF106
+	.4byte	.LASF107
 	.byte	0x7
-	.byte	0x14
+	.byte	0x15
 	.byte	0x2
 	.4byte	0x528
 	.uleb128 0x12
 	.byte	0x20
 	.byte	0x7
-	.byte	0x18
+	.byte	0x19
 	.byte	0x9
-	.4byte	0x5d7
+	.4byte	0x5e4
 	.uleb128 0x13
 	.ascii	"r0\000"
 	.byte	0x7
-	.byte	0x19
+	.byte	0x1a
 	.byte	0xc
 	.4byte	0x99
 	.byte	0
 	.uleb128 0x13
 	.ascii	"r1\000"
 	.byte	0x7
-	.byte	0x1a
+	.byte	0x1b
 	.byte	0xc
 	.4byte	0x99
 	.byte	0x4
 	.uleb128 0x13
 	.ascii	"r2\000"
 	.byte	0x7
-	.byte	0x1b
+	.byte	0x1c
 	.byte	0xc
 	.4byte	0x99
 	.byte	0x8
 	.uleb128 0x13
 	.ascii	"r3\000"
 	.byte	0x7
-	.byte	0x1c
+	.byte	0x1d
 	.byte	0xc
 	.4byte	0x99
 	.byte	0xc
 	.uleb128 0x13
 	.ascii	"r12\000"
 	.byte	0x7
-	.byte	0x1d
+	.byte	0x1e
 	.byte	0xc
 	.4byte	0x99
 	.byte	0x10
 	.uleb128 0x13
 	.ascii	"lr\000"
 	.byte	0x7
-	.byte	0x1e
+	.byte	0x1f
 	.byte	0xc
 	.4byte	0x99
 	.byte	0x14
 	.uleb128 0x13
 	.ascii	"pc\000"
 	.byte	0x7
-	.byte	0x1f
+	.byte	0x20
 	.byte	0xc
 	.4byte	0x99
 	.byte	0x18
 	.uleb128 0x13
 	.ascii	"psr\000"
 	.byte	0x7
-	.byte	0x20
+	.byte	0x21
 	.byte	0xc
 	.4byte	0x99
 	.byte	0x1c
 	.byte	0
 	.uleb128 0x3
-	.4byte	.LASF107
+	.4byte	.LASF108
 	.byte	0x7
-	.byte	0x21
+	.byte	0x22
 	.byte	0x3
-	.4byte	0x56b
+	.4byte	0x578
 	.uleb128 0xf
-	.4byte	0x55f
-	.4byte	0x5f3
+	.4byte	0x56c
+	.4byte	0x600
 	.uleb128 0x10
 	.4byte	0x81
 	.byte	0x2
 	.byte	0
 	.uleb128 0x18
-	.4byte	.LASF108
-	.byte	0x7
-	.byte	0x23
-	.byte	0x1b
-	.4byte	0x5e3
-	.uleb128 0x1b
-	.ascii	"i\000"
+	.4byte	.LASF109
 	.byte	0x7
 	.byte	0x24
-	.byte	0xa
-	.4byte	0x99
-	.uleb128 0x5
-	.byte	0x3
-	.4byte	i
-	.uleb128 0x1c
-	.4byte	.LASF109
+	.byte	0x1b
+	.4byte	0x5f0
+	.uleb128 0x1b
+	.ascii	"i\000"
 	.byte	0x7
 	.byte	0x25
 	.byte	0xa
 	.4byte	0x99
 	.uleb128 0x5
 	.byte	0x3
-	.4byte	current_task_ID
+	.4byte	i
 	.uleb128 0x1c
 	.4byte	.LASF110
 	.byte	0x7
@@ -1474,18 +1463,27 @@ SysTick_Handler:
 	.4byte	0x99
 	.uleb128 0x5
 	.byte	0x3
+	.4byte	current_task_ID
+	.uleb128 0x1c
+	.4byte	.LASF111
+	.byte	0x7
+	.byte	0x27
+	.byte	0xa
+	.4byte	0x99
+	.uleb128 0x5
+	.byte	0x3
 	.4byte	next_task_ID
 	.uleb128 0x1d
-	.4byte	.LASF123
+	.4byte	.LASF124
 	.byte	0x2
-	.byte	0x35
+	.byte	0x36
 	.byte	0x6
 	.4byte	.LFB32
 	.4byte	.LFE32-.LFB32
 	.uleb128 0x1
 	.byte	0x9c
 	.uleb128 0x1e
-	.4byte	.LASF113
+	.4byte	.LASF114
 	.byte	0x2
 	.byte	0x27
 	.byte	0x6
@@ -1493,9 +1491,9 @@ SysTick_Handler:
 	.4byte	.LFE31-.LFB31
 	.uleb128 0x1
 	.byte	0x9c
-	.4byte	0x67a
+	.4byte	0x687
 	.uleb128 0x1f
-	.4byte	.LASF111
+	.4byte	.LASF112
 	.byte	0x2
 	.byte	0x2a
 	.byte	0xe
@@ -1504,7 +1502,7 @@ SysTick_Handler:
 	.byte	0x91
 	.sleb128 -12
 	.uleb128 0x1f
-	.4byte	.LASF112
+	.4byte	.LASF113
 	.byte	0x2
 	.byte	0x2b
 	.byte	0xe
@@ -1514,7 +1512,7 @@ SysTick_Handler:
 	.sleb128 -16
 	.byte	0
 	.uleb128 0x1e
-	.4byte	.LASF114
+	.4byte	.LASF115
 	.byte	0x2
 	.byte	0x20
 	.byte	0x6
@@ -1522,9 +1520,9 @@ SysTick_Handler:
 	.4byte	.LFE30-.LFB30
 	.uleb128 0x1
 	.byte	0x9c
-	.4byte	0x6a0
+	.4byte	0x6ad
 	.uleb128 0x1f
-	.4byte	.LASF115
+	.4byte	.LASF116
 	.byte	0x2
 	.byte	0x22
 	.byte	0xe
@@ -1534,7 +1532,7 @@ SysTick_Handler:
 	.sleb128 -12
 	.byte	0
 	.uleb128 0x20
-	.4byte	.LASF124
+	.4byte	.LASF125
 	.byte	0x2
 	.byte	0x9
 	.byte	0x6
@@ -1542,22 +1540,22 @@ SysTick_Handler:
 	.4byte	.LFE29-.LFB29
 	.uleb128 0x1
 	.byte	0x9c
-	.4byte	0x6d5
+	.4byte	0x6e2
 	.uleb128 0x21
-	.4byte	.LASF117
+	.4byte	.LASF118
 	.byte	0x2
 	.byte	0x9
 	.byte	0x17
-	.4byte	0x6d5
+	.4byte	0x6e2
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -20
 	.uleb128 0x1f
-	.4byte	.LASF116
+	.4byte	.LASF117
 	.byte	0x2
 	.byte	0xb
 	.byte	0x17
-	.4byte	0x6d7
+	.4byte	0x6e4
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -12
@@ -1566,9 +1564,9 @@ SysTick_Handler:
 	.byte	0x4
 	.uleb128 0x1a
 	.byte	0x4
-	.4byte	0x5d7
+	.4byte	0x5e4
 	.uleb128 0x23
-	.4byte	.LASF125
+	.4byte	.LASF126
 	.byte	0x1
 	.2byte	0x69e
 	.byte	0x1a
@@ -1577,9 +1575,9 @@ SysTick_Handler:
 	.4byte	.LFE24-.LFB24
 	.uleb128 0x1
 	.byte	0x9c
-	.4byte	0x709
+	.4byte	0x716
 	.uleb128 0x24
-	.4byte	.LASF118
+	.4byte	.LASF119
 	.byte	0x1
 	.2byte	0x69e
 	.byte	0x32
@@ -1589,7 +1587,7 @@ SysTick_Handler:
 	.sleb128 -12
 	.byte	0
 	.uleb128 0x25
-	.4byte	.LASF126
+	.4byte	.LASF127
 	.byte	0x1
 	.2byte	0x632
 	.byte	0x16
@@ -1607,7 +1605,7 @@ SysTick_Handler:
 	.byte	0x91
 	.sleb128 -9
 	.uleb128 0x24
-	.4byte	.LASF119
+	.4byte	.LASF120
 	.byte	0x1
 	.2byte	0x632
 	.byte	0x40
@@ -2214,7 +2212,7 @@ SysTick_Handler:
 	.section	.debug_str,"MS",%progbits,1
 .LASF41:
 	.ascii	"USB_LP_CAN1_RX0_IRQn\000"
-.LASF117:
+.LASF118:
 	.ascii	"taskPointer\000"
 .LASF43:
 	.ascii	"CAN1_SCE_IRQn\000"
@@ -2226,7 +2224,7 @@ SysTick_Handler:
 	.ascii	"TIM4_IRQn\000"
 .LASF33:
 	.ascii	"DMA1_Channel2_IRQn\000"
-.LASF107:
+.LASF108:
 	.ascii	"hw_stack_frame_t\000"
 .LASF10:
 	.ascii	"unsigned int\000"
@@ -2270,7 +2268,7 @@ SysTick_Handler:
 	.ascii	"long long unsigned int\000"
 .LASF101:
 	.ascii	"HALTED\000"
-.LASF116:
+.LASF117:
 	.ascii	"process_frame\000"
 .LASF42:
 	.ascii	"CAN1_RX1_IRQn\000"
@@ -2278,27 +2276,29 @@ SysTick_Handler:
 	.ascii	"USB_HP_CAN1_TX_IRQn\000"
 .LASF64:
 	.ascii	"IRQn_Type\000"
-.LASF109:
+.LASF110:
 	.ascii	"current_task_ID\000"
+.LASF104:
+	.ascii	"stackPointerAdd\000"
 .LASF59:
 	.ascii	"USART2_IRQn\000"
-.LASF112:
+.LASF113:
 	.ascii	"new_psp\000"
 .LASF78:
 	.ascii	"CPUID\000"
-.LASF120:
+.LASF121:
 	.ascii	"GNU C17 8.3.1 20190703 (release) [gcc-8-branch revi"
 	.ascii	"sion 273027] -mcpu=cortex-m3 -mthumb -mfloat-abi=so"
 	.ascii	"ft -march=armv7-m -ggdb -O0\000"
-.LASF124:
-	.ascii	"CreateTask\000"
 .LASF125:
+	.ascii	"CreateTask\000"
+.LASF126:
 	.ascii	"SysTick_Config\000"
 .LASF88:
 	.ascii	"AFSR\000"
-.LASF122:
+.LASF123:
 	.ascii	"/home/witek/CODE/arm/test_gnu\000"
-.LASF118:
+.LASF119:
 	.ascii	"ticks\000"
 .LASF54:
 	.ascii	"I2C2_EV_IRQn\000"
@@ -2314,11 +2314,11 @@ SysTick_Handler:
 	.ascii	"DMA1_Channel1_IRQn\000"
 .LASF11:
 	.ascii	"uint8_t\000"
-.LASF115:
+.LASF116:
 	.ascii	"status\000"
 .LASF28:
 	.ascii	"EXTI1_IRQn\000"
-.LASF113:
+.LASF114:
 	.ascii	"InitThreads\000"
 .LASF63:
 	.ascii	"USBWakeUp_IRQn\000"
@@ -2330,7 +2330,7 @@ SysTick_Handler:
 	.ascii	"SHCSR\000"
 .LASF102:
 	.ascii	"DEAD\000"
-.LASF123:
+.LASF124:
 	.ascii	"SysTick_Handler\000"
 .LASF83:
 	.ascii	"CFSR\000"
@@ -2342,7 +2342,7 @@ SysTick_Handler:
 	.ascii	"threadState\000"
 .LASF31:
 	.ascii	"EXTI4_IRQn\000"
-.LASF126:
+.LASF127:
 	.ascii	"NVIC_SetPriority\000"
 .LASF22:
 	.ascii	"PVD_IRQn\000"
@@ -2378,7 +2378,7 @@ SysTick_Handler:
 	.ascii	"RESERVED4\000"
 .LASF75:
 	.ascii	"RESERVED5\000"
-.LASF106:
+.LASF107:
 	.ascii	"ThreadControlBlock\000"
 .LASF2:
 	.ascii	"short int\000"
@@ -2390,13 +2390,13 @@ SysTick_Handler:
 	.ascii	"ITM_RxBuffer\000"
 .LASF13:
 	.ascii	"NonMaskableInt_IRQn\000"
-.LASF119:
+.LASF120:
 	.ascii	"priority\000"
 .LASF48:
 	.ascii	"TIM1_CC_IRQn\000"
-.LASF111:
+.LASF112:
 	.ascii	"current_msp\000"
-.LASF121:
+.LASF122:
 	.ascii	"src/kernel.c\000"
 .LASF5:
 	.ascii	"__uint8_t\000"
@@ -2412,7 +2412,7 @@ SysTick_Handler:
 	.ascii	"VTOR\000"
 .LASF53:
 	.ascii	"I2C1_ER_IRQn\000"
-.LASF114:
+.LASF115:
 	.ascii	"RunOS\000"
 .LASF20:
 	.ascii	"SysTick_IRQn\000"
@@ -2422,11 +2422,11 @@ SysTick_Handler:
 	.ascii	"long unsigned int\000"
 .LASF49:
 	.ascii	"TIM2_IRQn\000"
-.LASF108:
+.LASF109:
 	.ascii	"threads\000"
-.LASF104:
+.LASF105:
 	.ascii	"state\000"
-.LASF110:
+.LASF111:
 	.ascii	"next_task_ID\000"
 .LASF18:
 	.ascii	"DebugMonitor_IRQn\000"
@@ -2436,7 +2436,7 @@ SysTick_Handler:
 	.ascii	"unsigned char\000"
 .LASF6:
 	.ascii	"__uint32_t\000"
-.LASF105:
+.LASF106:
 	.ascii	"entryPoint\000"
 .LASF44:
 	.ascii	"EXTI9_5_IRQn\000"

@@ -15,6 +15,7 @@ enum threadState{
 };
 typedef struct {
     uint32_t stackPointer;
+    uint32_t* stackPointerAdd;
     enum threadState state;
     uint32_t *entryPoint;
 }ThreadControlBlock;
