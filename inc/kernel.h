@@ -37,4 +37,5 @@ extern ThreadControlBlock threads[THREAD_COUNT_MAX];
 uint32_t i;
 uint32_t current_task_ID;
 uint32_t next_task_ID;
-
+uint32_t task_id_adder;
+uint32_t shared_value;

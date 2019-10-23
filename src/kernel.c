@@ -32,6 +32,7 @@ void CreateTask(void *taskPointer)
 void RunOS()
 {
     uint32_t status = SysTick_Config(0x2FFFF);
+    NVIC_SetPriority(PendSV_IRQn, 0xFF); // Set PendSV to lowest
     current_task_ID = 0;
     __set_CONTROL(0x3);
 }
@@ -50,21 +51,13 @@ void InitThreads()
         threads[i].state = DEAD;
     }
 }
-
-void SysTick_Handler(void)
+void PendSV_Handler(void)
 {
     // save software stack
     if (threads[current_task_ID].state == RUNNING)
     {
         asm volatile("MRS   r0,  psp      \n\t"
                      "STMDB r0!, {r4-r11} \n\t");
-    }
-
-    //select next task
-    next_task_ID = current_task_ID + 1;
-    if (next_task_ID == THREAD_COUNT_MAX)
-    {
-        next_task_ID = 0;
     }
 
     //halt current working
@@ -92,4 +85,21 @@ void SysTick_Handler(void)
         threads[current_task_ID].state = RUNNING;
         asm volatile("LDMIA r0!, {r4-r11}  \n\t");
     }
+}
+void SysTick_Handler(void)
+{
+ task_id_adder=1;
+
+    do
+    {
+        next_task_ID = current_task_ID + task_id_adder;
+        if (next_task_ID == THREAD_COUNT_MAX)
+        {
+            next_task_ID = 0;
+            task_id_adder=1;
+        }
+        task_id_adder++;
+    } while (threads[next_task_ID].state == DEAD);
+
+    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk; // Set PendSV to pending
 }
