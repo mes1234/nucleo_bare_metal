@@ -12,6 +12,7 @@
         "stm32f10x_tim.h": "c",
         "core_cm3.h": "c",
         "main.h": "c",
-        "setup_stack.h": "c"
+        "setup_stack.h": "c",
+        "kernel.h": "c"
     }
 }
