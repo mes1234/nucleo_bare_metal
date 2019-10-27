@@ -59,6 +59,11 @@ void task1()
       GPIO_WriteBit(GPIOA, GPIO_Pin_5, shared_value);
       val = 0;
     }
+    else
+    {
+      Sleep();
+    }
+    
   }
 }
 

@@ -1,11 +1,15 @@
 #include <stdint.h>
 
-#define THREAD_COUNT_MAX 3
+#define THREAD_COUNT_MAX 5
 #define PSP_SIZE 0x1000
-
+#define SVC(code) asm volatile ("svc %[immediate]"::[immediate] "I" (code))
+#define ScheduleContextSwitch() SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk; // Set PendSV to pending
 void InitThreads();
 void SetupKernel();
 void CreateTask(void *taskPointer);
+void Sleep();
+void ContexSwitch();
+uint32_t Get_SVC_Number();
 
 enum threadState{
     NEW,
@@ -39,3 +43,4 @@ uint32_t current_task_ID;
 uint32_t next_task_ID;
 uint32_t task_id_adder;
 uint32_t shared_value;
+uint32_t svc_number;

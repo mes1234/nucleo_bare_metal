@@ -6,6 +6,64 @@
 #include "core_cm3.h"
 #include "kernel.h"
 
+
+void SelectNextTask()
+{
+    task_id_adder = 1;
+
+    do
+    {
+        next_task_ID = current_task_ID + task_id_adder;
+        if (next_task_ID == THREAD_COUNT_MAX)
+        {
+            next_task_ID = 0;
+            task_id_adder = 1;
+        }
+        task_id_adder++;
+    } while (threads[next_task_ID].state == DEAD);
+}
+
+void ContexSwitch()
+{
+    // save software stack
+    if (threads[current_task_ID].state == RUNNING)
+    {
+        asm volatile("MRS   r0,  psp      \n\t"
+                     "STMDB r0!, {r4-r11} \n\t");
+    }
+
+    //halt current working
+    if (threads[current_task_ID].state == RUNNING)
+    {
+        asm volatile("mrs %0, psp"
+                     : "=r"(threads[current_task_ID].stackPointer)
+                     :);
+        threads[current_task_ID].stackPointerAdd = __get_PSP();
+        threads[current_task_ID].state = HALTED;
+        current_task_ID = next_task_ID;
+    }
+
+    //start new task
+    if (threads[current_task_ID].state == NEW)
+    {
+        __set_PSP(threads[current_task_ID].stackPointer);
+        threads[current_task_ID].state = RUNNING;
+    }
+
+    //start running halted task
+    if (threads[current_task_ID].state == HALTED)
+    {
+        __set_PSP(threads[current_task_ID].stackPointer);
+        threads[current_task_ID].state = RUNNING;
+        asm volatile("LDMIA r0!, {r4-r11}  \n\t");
+    }
+}
+
+void Sleep()
+{
+    SVC(111);
+}
+
 void CreateTask(void *taskPointer)
 {
     hw_stack_frame_t *process_frame;
@@ -53,53 +111,28 @@ void InitThreads()
 }
 void PendSV_Handler(void)
 {
-    // save software stack
-    if (threads[current_task_ID].state == RUNNING)
-    {
-        asm volatile("MRS   r0,  psp      \n\t"
-                     "STMDB r0!, {r4-r11} \n\t");
-    }
-
-    //halt current working
-    if (threads[current_task_ID].state == RUNNING)
-    {
-        asm volatile("mrs %0, psp"
-                     : "=r"(threads[current_task_ID].stackPointer)
-                     :);
-        threads[current_task_ID].stackPointerAdd = __get_PSP();
-        threads[current_task_ID].state = HALTED;
-        current_task_ID = next_task_ID;
-    }
-
-    //start new task
-    if (threads[current_task_ID].state == NEW)
-    {
-        __set_PSP(threads[current_task_ID].stackPointer);
-        threads[current_task_ID].state = RUNNING;
-    }
-
-    //start running halted task
-    if (threads[current_task_ID].state == HALTED)
-    {
-        __set_PSP(threads[current_task_ID].stackPointer);
-        threads[current_task_ID].state = RUNNING;
-        asm volatile("LDMIA r0!, {r4-r11}  \n\t");
-    }
+    SelectNextTask();
+    ContexSwitch();
 }
 void SysTick_Handler(void)
 {
- task_id_adder=1;
+    
 
-    do
-    {
-        next_task_ID = current_task_ID + task_id_adder;
-        if (next_task_ID == THREAD_COUNT_MAX)
-        {
-            next_task_ID = 0;
-            task_id_adder=1;
-        }
-        task_id_adder++;
-    } while (threads[next_task_ID].state == DEAD);
+    ScheduleContextSwitch();
+}
 
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk; // Set PendSV to pending
+void SVC_Handler()
+{
+    svc_number= Get_SVC_Number();
+    ScheduleContextSwitch();
+    
+}
+
+uint32_t Get_SVC_Number()
+{
+    uint32_t* result = 0;
+    asm volatile("MRS R0, PSP\n\t"
+                 "MOV %0, R0"
+                 : "=r"(result));
+    return ((char *) result[6])[-2];
 }
