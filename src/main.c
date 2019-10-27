@@ -31,9 +31,6 @@ int main(void)
   CreateTask(task2);
   // CreateTask(task3);
   RunOS();
-  while (1)
-  {
-  }
 }
 
 void setupLED()
@@ -49,36 +46,42 @@ void setupLED()
 
 void task1()
 {
-  int val = 0;
+  uint32_t volatile val1 = 1000;
   while (1)
   {
-    val += 1;
-    if (val > 702000)
+    val1 += 1;
+    if (val1 > 1700)
     {
       shared_value = 1;
       GPIO_WriteBit(GPIOA, GPIO_Pin_5, shared_value);
-      val = 0;
+      val1 = 1000;
     }
     else
     {
-      Sleep();
+      // Sleep();
     }
-    
   }
 }
 
 void task2()
 {
-  int val = 0;
+  uint32_t volatile val = 20000;
   while (1)
   {
-
     val += 1;
-    if (val > 302000)
+    if (val > 20700)
     {
       shared_value = 0;
       GPIO_WriteBit(GPIOA, GPIO_Pin_5, shared_value);
-      val = 0;
+      val = 20000;
+    }
+    else
+    {
+      // Sleep();
+    }
+    if (val <20000)
+    {
+      Sleep();
     }
   }
 }

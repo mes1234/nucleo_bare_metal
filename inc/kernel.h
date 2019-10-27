@@ -4,12 +4,16 @@
 #define PSP_SIZE 0x1000
 #define SVC(code) asm volatile ("svc %[immediate]"::[immediate] "I" (code))
 #define ScheduleContextSwitch() SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk; // Set PendSV to pending
+#define Sleep() SVC(111);
+#define BackupSoftwareStack() asm volatile("MRS   r0,  psp      \n\t"\
+                                           "STMDB r0!, {r4-r11} \n\t");
+#define RestoreSoftwareStack() asm volatile("MRS   r0,  psp      \n\t"\
+                                            "LDMIA r0!, {r4-r11} \n\t");                                         
 void InitThreads();
 void SetupKernel();
 void CreateTask(void *taskPointer);
-void Sleep();
 void ContexSwitch();
-uint32_t Get_SVC_Number();
+uint32_t GetSvcNumber();
 
 enum threadState{
     NEW,
@@ -44,3 +48,4 @@ uint32_t next_task_ID;
 uint32_t task_id_adder;
 uint32_t shared_value;
 uint32_t svc_number;
+uint8_t  startup_flag; 

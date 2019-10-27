@@ -6,7 +6,6 @@
 #include "core_cm3.h"
 #include "kernel.h"
 
-
 void SelectNextTask()
 {
     task_id_adder = 1;
@@ -25,13 +24,6 @@ void SelectNextTask()
 
 void ContexSwitch()
 {
-    // save software stack
-    if (threads[current_task_ID].state == RUNNING)
-    {
-        asm volatile("MRS   r0,  psp      \n\t"
-                     "STMDB r0!, {r4-r11} \n\t");
-    }
-
     //halt current working
     if (threads[current_task_ID].state == RUNNING)
     {
@@ -42,26 +34,21 @@ void ContexSwitch()
         threads[current_task_ID].state = HALTED;
         current_task_ID = next_task_ID;
     }
-
     //start new task
     if (threads[current_task_ID].state == NEW)
     {
         __set_PSP(threads[current_task_ID].stackPointer);
         threads[current_task_ID].state = RUNNING;
+        return;
     }
-
     //start running halted task
     if (threads[current_task_ID].state == HALTED)
     {
         __set_PSP(threads[current_task_ID].stackPointer);
         threads[current_task_ID].state = RUNNING;
-        asm volatile("LDMIA r0!, {r4-r11}  \n\t");
+        RestoreSoftwareStack();
+        return;
     }
-}
-
-void Sleep()
-{
-    SVC(111);
 }
 
 void CreateTask(void *taskPointer)
@@ -89,15 +76,18 @@ void CreateTask(void *taskPointer)
 
 void RunOS()
 {
-    uint32_t status = SysTick_Config(0x2FFFF);
+    uint32_t status = SysTick_Config(168000);
     NVIC_SetPriority(PendSV_IRQn, 0xFF); // Set PendSV to lowest
     current_task_ID = 0;
     __set_CONTROL(0x3);
+    while (1)
+    {
+    }
 }
 
 void InitThreads()
 {
-
+    startup_flag = 1;
     uint32_t current_msp = __get_MSP();
     uint32_t new_psp;
 
@@ -111,28 +101,44 @@ void InitThreads()
 }
 void PendSV_Handler(void)
 {
+    if (startup_flag)
+    {
+        startup_flag = 0;
+    }
+    else
+    {
+        BackupSoftwareStack();
+    }
+
     SelectNextTask();
     ContexSwitch();
 }
 void SysTick_Handler(void)
 {
-    
-
     ScheduleContextSwitch();
 }
 
 void SVC_Handler()
 {
-    svc_number= Get_SVC_Number();
-    ScheduleContextSwitch();
-    
+    BackupSoftwareStack();
+    svc_number = GetSvcNumber();
+    switch (svc_number)
+    {
+    case 111:
+        SelectNextTask();
+        ContexSwitch();
+        break;
+
+    default:
+        break;
+    }
 }
 
-uint32_t Get_SVC_Number()
+uint32_t GetSvcNumber()
 {
-    uint32_t* result = 0;
+    uint32_t *result = 0;
     asm volatile("MRS R0, PSP\n\t"
                  "MOV %0, R0"
                  : "=r"(result));
-    return ((char *) result[6])[-2];
+    return ((char *)result[6])[-2];
 }

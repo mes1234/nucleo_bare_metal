@@ -169,6 +169,7 @@ SysTick_Config:
 	.comm	task_id_adder,4,4
 	.comm	shared_value,4,4
 	.comm	svc_number,4,4
+	.comm	startup_flag,1,1
 	.align	1
 	.global	SelectNextTask
 	.syntax unified
@@ -179,7 +180,7 @@ SysTick_Config:
 SelectNextTask:
 .LFB29:
 	.file 2 "src/kernel.c"
-	.loc 2 11 1
+	.loc 2 10 1
 	.cfi_startproc
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -189,42 +190,42 @@ SelectNextTask:
 	.cfi_offset 7, -4
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
-	.loc 2 12 19
+	.loc 2 11 19
 	ldr	r3, .L15
 	movs	r2, #1
 	str	r2, [r3]
 .L14:
-	.loc 2 16 40
+	.loc 2 15 40
 	ldr	r3, .L15+4
 	ldr	r2, [r3]
 	ldr	r3, .L15
 	ldr	r3, [r3]
 	add	r3, r3, r2
-	.loc 2 16 22
+	.loc 2 15 22
 	ldr	r2, .L15+8
 	str	r3, [r2]
-	.loc 2 17 26
+	.loc 2 16 26
 	ldr	r3, .L15+8
 	ldr	r3, [r3]
-	.loc 2 17 12
+	.loc 2 16 12
 	cmp	r3, #5
 	bne	.L13
-	.loc 2 19 26
+	.loc 2 18 26
 	ldr	r3, .L15+8
 	movs	r2, #0
 	str	r2, [r3]
-	.loc 2 20 27
+	.loc 2 19 27
 	ldr	r3, .L15
 	movs	r2, #1
 	str	r2, [r3]
 .L13:
-	.loc 2 22 22
+	.loc 2 21 22
 	ldr	r3, .L15
 	ldr	r3, [r3]
 	adds	r3, r3, #1
 	ldr	r2, .L15
 	str	r3, [r2]
-	.loc 2 23 35
+	.loc 2 22 35
 	ldr	r3, .L15+8
 	ldr	r3, [r3]
 	ldr	r2, .L15+12
@@ -232,10 +233,10 @@ SelectNextTask:
 	add	r3, r3, r2
 	adds	r3, r3, #8
 	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 23 5
+	.loc 2 22 5
 	cmp	r3, #3
 	beq	.L14
-	.loc 2 24 1
+	.loc 2 23 1
 	nop
 	mov	sp, r7
 	.cfi_def_cfa_register 13
@@ -263,7 +264,7 @@ SelectNextTask:
 	.type	ContexSwitch, %function
 ContexSwitch:
 .LFB30:
-	.loc 2 27 1
+	.loc 2 26 1
 	.cfi_startproc
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -273,202 +274,147 @@ ContexSwitch:
 	.cfi_offset 14, -4
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
-	.loc 2 29 33
-	ldr	r3, .L23
+	.loc 2 28 33
+	ldr	r3, .L21
 	ldr	r3, [r3]
-	ldr	r2, .L23+4
+	ldr	r2, .L21+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	adds	r3, r3, #8
 	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 29 8
+	.loc 2 28 8
 	cmp	r3, #1
 	bne	.L18
-	.loc 2 31 9
-	.syntax unified
-@ 31 "src/kernel.c" 1
-	MRS   r0,  psp      
-	STMDB r0!, {r4-r11} 
-	
-@ 0 "" 2
-	.thumb
-	.syntax unified
-.L18:
-	.loc 2 36 33
-	ldr	r3, .L23
+	.loc 2 31 53
+	ldr	r3, .L21
 	ldr	r3, [r3]
-	ldr	r2, .L23+4
-	lsls	r3, r3, #4
-	add	r3, r3, r2
-	adds	r3, r3, #8
-	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 36 8
-	cmp	r3, #1
-	bne	.L19
-	.loc 2 39 53
-	ldr	r3, .L23
-	ldr	r3, [r3]
-	.loc 2 38 9
+	.loc 2 30 9
 	.syntax unified
-@ 38 "src/kernel.c" 1
+@ 30 "src/kernel.c" 1
 	mrs r2, psp
 @ 0 "" 2
 	.thumb
 	.syntax unified
-	ldr	r1, .L23+4
+	ldr	r1, .L21+4
 	lsls	r3, r3, #4
 	add	r3, r3, r1
 	str	r2, [r3]
-	.loc 2 41 52
+	.loc 2 33 52
 	bl	__get_PSP
 	mov	r2, r0
-	.loc 2 41 33
-	ldr	r3, .L23
+	.loc 2 33 33
+	ldr	r3, .L21
 	ldr	r3, [r3]
-	.loc 2 41 52
+	.loc 2 33 52
 	mov	r1, r2
-	.loc 2 41 50
-	ldr	r2, .L23+4
+	.loc 2 33 50
+	ldr	r2, .L21+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	adds	r3, r3, #4
 	str	r1, [r3]
-	.loc 2 42 33
-	ldr	r3, .L23
+	.loc 2 34 33
+	ldr	r3, .L21
 	ldr	r3, [r3]
-	.loc 2 42 40
-	ldr	r2, .L23+4
+	.loc 2 34 40
+	ldr	r2, .L21+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	adds	r3, r3, #8
 	movs	r2, #2
 	strb	r2, [r3]
-	.loc 2 43 25
-	ldr	r3, .L23+8
+	.loc 2 35 25
+	ldr	r3, .L21+8
 	ldr	r3, [r3]
-	ldr	r2, .L23
+	ldr	r2, .L21
 	str	r3, [r2]
-.L19:
-	.loc 2 47 33
-	ldr	r3, .L23
+.L18:
+	.loc 2 38 33
+	ldr	r3, .L21
 	ldr	r3, [r3]
-	ldr	r2, .L23+4
+	ldr	r2, .L21+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	adds	r3, r3, #8
 	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 47 8
+	.loc 2 38 8
 	cmp	r3, #0
-	bne	.L20
-	.loc 2 49 9
-	ldr	r3, .L23
+	bne	.L19
+	.loc 2 40 9
+	ldr	r3, .L21
 	ldr	r3, [r3]
-	ldr	r2, .L23+4
+	ldr	r2, .L21+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	ldr	r3, [r3]
 	mov	r0, r3
 	bl	__set_PSP
-	.loc 2 50 33
-	ldr	r3, .L23
+	.loc 2 41 33
+	ldr	r3, .L21
 	ldr	r3, [r3]
-	.loc 2 50 40
-	ldr	r2, .L23+4
+	.loc 2 41 40
+	ldr	r2, .L21+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	adds	r3, r3, #8
 	movs	r2, #1
 	strb	r2, [r3]
-.L20:
-	.loc 2 54 33
-	ldr	r3, .L23
+	.loc 2 42 9
+	b	.L17
+.L19:
+	.loc 2 45 33
+	ldr	r3, .L21
 	ldr	r3, [r3]
-	ldr	r2, .L23+4
+	ldr	r2, .L21+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	adds	r3, r3, #8
 	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 54 8
+	.loc 2 45 8
 	cmp	r3, #2
-	bne	.L22
-	.loc 2 56 9
-	ldr	r3, .L23
+	bne	.L17
+	.loc 2 47 9
+	ldr	r3, .L21
 	ldr	r3, [r3]
-	ldr	r2, .L23+4
+	ldr	r2, .L21+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	ldr	r3, [r3]
 	mov	r0, r3
 	bl	__set_PSP
-	.loc 2 57 33
-	ldr	r3, .L23
+	.loc 2 48 33
+	ldr	r3, .L21
 	ldr	r3, [r3]
-	.loc 2 57 40
-	ldr	r2, .L23+4
+	.loc 2 48 40
+	ldr	r2, .L21+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	adds	r3, r3, #8
 	movs	r2, #1
 	strb	r2, [r3]
-	.loc 2 58 9
+	.loc 2 49 9
 	.syntax unified
-@ 58 "src/kernel.c" 1
-	LDMIA r0!, {r4-r11}  
+@ 49 "src/kernel.c" 1
+	MRS   r0,  psp      
+	LDMIA r0!, {r4-r11} 
 	
 @ 0 "" 2
+	.loc 2 50 9
 	.thumb
 	.syntax unified
-.L22:
-	.loc 2 60 1
 	nop
+.L17:
+	.loc 2 52 1
 	pop	{r7, pc}
-.L24:
+.L22:
 	.align	2
-.L23:
+.L21:
 	.word	current_task_ID
 	.word	threads
 	.word	next_task_ID
 	.cfi_endproc
 .LFE30:
 	.size	ContexSwitch, .-ContexSwitch
-	.align	1
-	.global	Sleep
-	.syntax unified
-	.thumb
-	.thumb_func
-	.fpu softvfp
-	.type	Sleep, %function
-Sleep:
-.LFB31:
-	.loc 2 63 1
-	.cfi_startproc
-	@ args = 0, pretend = 0, frame = 0
-	@ frame_needed = 1, uses_anonymous_args = 0
-	@ link register save eliminated.
-	push	{r7}
-	.cfi_def_cfa_offset 4
-	.cfi_offset 7, -4
-	add	r7, sp, #0
-	.cfi_def_cfa_register 7
-	.loc 2 64 5
-	.syntax unified
-@ 64 "src/kernel.c" 1
-	svc #111
-@ 0 "" 2
-	.loc 2 65 1
-	.thumb
-	.syntax unified
-	nop
-	mov	sp, r7
-	.cfi_def_cfa_register 13
-	@ sp needed
-	pop	{r7}
-	.cfi_restore 7
-	.cfi_def_cfa_offset 0
-	bx	lr
-	.cfi_endproc
-.LFE31:
-	.size	Sleep, .-Sleep
 	.align	1
 	.global	CreateTask
 	.syntax unified
@@ -477,8 +423,8 @@ Sleep:
 	.fpu softvfp
 	.type	CreateTask, %function
 CreateTask:
-.LFB32:
-	.loc 2 68 1
+.LFB31:
+	.loc 2 55 1
 	.cfi_startproc
 	@ args = 0, pretend = 0, frame = 16
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -491,103 +437,103 @@ CreateTask:
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
 	str	r0, [r7, #4]
-	.loc 2 70 12
-	ldr	r3, .L31
+	.loc 2 57 12
+	ldr	r3, .L28
 	movs	r2, #0
 	str	r2, [r3]
-	.loc 2 70 5
-	b	.L27
-.L30:
-	.loc 2 72 23
-	ldr	r3, .L31
+	.loc 2 57 5
+	b	.L24
+.L27:
+	.loc 2 59 23
+	ldr	r3, .L28
 	ldr	r3, [r3]
-	ldr	r2, .L31+4
+	ldr	r2, .L28+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	adds	r3, r3, #8
 	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 72 12
+	.loc 2 59 12
 	cmp	r3, #3
-	bne	.L28
-	.loc 2 74 23
-	ldr	r3, .L31
+	bne	.L25
+	.loc 2 61 23
+	ldr	r3, .L28
 	ldr	r3, [r3]
-	.loc 2 74 30
-	ldr	r2, .L31+4
+	.loc 2 61 30
+	ldr	r2, .L28+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	adds	r3, r3, #8
 	movs	r2, #0
 	strb	r2, [r3]
-	.loc 2 75 23
-	ldr	r3, .L31
+	.loc 2 62 23
+	ldr	r3, .L28
 	ldr	r3, [r3]
-	.loc 2 75 35
-	ldr	r2, .L31+4
+	.loc 2 62 35
+	ldr	r2, .L28+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	adds	r3, r3, #12
 	ldr	r2, [r7, #4]
 	str	r2, [r3]
-	.loc 2 76 60
-	ldr	r3, .L31
+	.loc 2 63 60
+	ldr	r3, .L28
 	ldr	r3, [r3]
-	ldr	r2, .L31+4
+	ldr	r2, .L28+4
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	ldr	r3, [r3]
-	.loc 2 76 27
+	.loc 2 63 27
 	str	r3, [r7, #12]
-	.loc 2 77 31
+	.loc 2 64 31
 	ldr	r3, [r7, #12]
 	movs	r2, #0
 	str	r2, [r3]
-	.loc 2 78 31
+	.loc 2 65 31
 	ldr	r3, [r7, #12]
 	movs	r2, #0
 	str	r2, [r3, #4]
-	.loc 2 79 31
+	.loc 2 66 31
 	ldr	r3, [r7, #12]
 	movs	r2, #0
 	str	r2, [r3, #8]
-	.loc 2 80 31
+	.loc 2 67 31
 	ldr	r3, [r7, #12]
 	movs	r2, #0
 	str	r2, [r3, #12]
-	.loc 2 81 32
+	.loc 2 68 32
 	ldr	r3, [r7, #12]
 	movs	r2, #0
 	str	r2, [r3, #16]
-	.loc 2 82 31
+	.loc 2 69 31
 	ldr	r2, [r7, #4]
 	ldr	r3, [r7, #12]
 	str	r2, [r3, #24]
-	.loc 2 83 31
+	.loc 2 70 31
 	ldr	r2, [r7, #4]
 	ldr	r3, [r7, #12]
 	str	r2, [r3, #20]
-	.loc 2 84 32
+	.loc 2 71 32
 	ldr	r3, [r7, #12]
 	mov	r2, #553648128
 	str	r2, [r3, #28]
-	.loc 2 85 13
-	b	.L29
-.L28:
-	.loc 2 70 40 discriminator 2
-	ldr	r3, .L31
+	.loc 2 72 13
+	b	.L26
+.L25:
+	.loc 2 57 40 discriminator 2
+	ldr	r3, .L28
 	ldr	r3, [r3]
 	adds	r3, r3, #1
-	ldr	r2, .L31
+	ldr	r2, .L28
 	str	r3, [r2]
-.L27:
-	.loc 2 70 19 discriminator 1
-	ldr	r3, .L31
+.L24:
+	.loc 2 57 19 discriminator 1
+	ldr	r3, .L28
 	ldr	r3, [r3]
-	.loc 2 70 5 discriminator 1
+	.loc 2 57 5 discriminator 1
 	cmp	r3, #4
-	bls	.L30
-.L29:
-	.loc 2 88 1
+	bls	.L27
+.L26:
+	.loc 2 75 1
 	nop
 	adds	r7, r7, #20
 	.cfi_def_cfa_offset 4
@@ -598,13 +544,13 @@ CreateTask:
 	.cfi_restore 7
 	.cfi_def_cfa_offset 0
 	bx	lr
-.L32:
+.L29:
 	.align	2
-.L31:
+.L28:
 	.word	i
 	.word	threads
 	.cfi_endproc
-.LFE32:
+.LFE31:
 	.size	CreateTask, .-CreateTask
 	.align	1
 	.global	RunOS
@@ -614,8 +560,8 @@ CreateTask:
 	.fpu softvfp
 	.type	RunOS, %function
 RunOS:
-.LFB33:
-	.loc 2 91 1
+.LFB32:
+	.loc 2 78 1
 	.cfi_startproc
 	@ args = 0, pretend = 0, frame = 8
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -627,36 +573,31 @@ RunOS:
 	.cfi_def_cfa_offset 16
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
-	.loc 2 92 23
-	ldr	r0, .L34
+	.loc 2 79 23
+	ldr	r0, .L32
 	bl	SysTick_Config
 	str	r0, [r7, #4]
-	.loc 2 93 5
+	.loc 2 80 5
 	movs	r1, #255
 	mvn	r0, #1
 	bl	NVIC_SetPriority
-	.loc 2 94 21
-	ldr	r3, .L34+4
+	.loc 2 81 21
+	ldr	r3, .L32+4
 	movs	r2, #0
 	str	r2, [r3]
-	.loc 2 95 5
+	.loc 2 82 5
 	movs	r0, #3
 	bl	__set_CONTROL
-	.loc 2 96 1
-	nop
-	adds	r7, r7, #8
-	.cfi_def_cfa_offset 8
-	mov	sp, r7
-	.cfi_def_cfa_register 13
-	@ sp needed
-	pop	{r7, pc}
-.L35:
+.L31:
+	.loc 2 83 11 discriminator 1
+	b	.L31
+.L33:
 	.align	2
-.L34:
-	.word	196607
+.L32:
+	.word	168000
 	.word	current_task_ID
 	.cfi_endproc
-.LFE33:
+.LFE32:
 	.size	RunOS, .-RunOS
 	.align	1
 	.global	InitThreads
@@ -666,8 +607,8 @@ RunOS:
 	.fpu softvfp
 	.type	InitThreads, %function
 InitThreads:
-.LFB34:
-	.loc 2 99 1
+.LFB33:
+	.loc 2 89 1
 	.cfi_startproc
 	@ args = 0, pretend = 0, frame = 8
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -679,76 +620,80 @@ InitThreads:
 	.cfi_def_cfa_offset 16
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
-	.loc 2 101 28
+	.loc 2 90 18
+	ldr	r3, .L37
+	movs	r2, #1
+	strb	r2, [r3]
+	.loc 2 91 28
 	bl	__get_MSP
 	str	r0, [r7, #4]
-	.loc 2 104 12
-	ldr	r3, .L39
+	.loc 2 94 12
+	ldr	r3, .L37+4
 	movs	r2, #0
 	str	r2, [r3]
-	.loc 2 104 5
-	b	.L37
-.L38:
-	.loc 2 106 41 discriminator 3
-	ldr	r3, .L39
+	.loc 2 94 5
+	b	.L35
+.L36:
+	.loc 2 96 41 discriminator 3
+	ldr	r3, .L37+4
 	ldr	r3, [r3]
 	adds	r3, r3, #1
 	lsls	r3, r3, #12
-	.loc 2 106 17 discriminator 3
+	.loc 2 96 17 discriminator 3
 	ldr	r2, [r7, #4]
 	subs	r3, r2, r3
 	str	r3, [r7]
-	.loc 2 107 19 discriminator 3
-	ldr	r3, .L39
+	.loc 2 97 19 discriminator 3
+	ldr	r3, .L37+4
 	ldr	r3, [r3]
-	.loc 2 107 33 discriminator 3
-	ldr	r2, .L39+4
+	.loc 2 97 33 discriminator 3
+	ldr	r2, .L37+8
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	ldr	r2, [r7]
 	str	r2, [r3]
-	.loc 2 108 48 discriminator 3
-	ldr	r3, .L39
+	.loc 2 98 48 discriminator 3
+	ldr	r3, .L37+4
 	ldr	r3, [r3]
-	ldr	r2, .L39+4
+	ldr	r2, .L37+8
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	ldr	r2, [r3]
-	.loc 2 108 19 discriminator 3
-	ldr	r3, .L39
+	.loc 2 98 19 discriminator 3
+	ldr	r3, .L37+4
 	ldr	r3, [r3]
-	.loc 2 108 48 discriminator 3
+	.loc 2 98 48 discriminator 3
 	mov	r1, r2
-	.loc 2 108 36 discriminator 3
-	ldr	r2, .L39+4
+	.loc 2 98 36 discriminator 3
+	ldr	r2, .L37+8
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	adds	r3, r3, #4
 	str	r1, [r3]
-	.loc 2 109 19 discriminator 3
-	ldr	r3, .L39
+	.loc 2 99 19 discriminator 3
+	ldr	r3, .L37+4
 	ldr	r3, [r3]
-	.loc 2 109 26 discriminator 3
-	ldr	r2, .L39+4
+	.loc 2 99 26 discriminator 3
+	ldr	r2, .L37+8
 	lsls	r3, r3, #4
 	add	r3, r3, r2
 	adds	r3, r3, #8
 	movs	r2, #3
 	strb	r2, [r3]
-	.loc 2 104 40 discriminator 3
-	ldr	r3, .L39
+	.loc 2 94 40 discriminator 3
+	ldr	r3, .L37+4
 	ldr	r3, [r3]
 	adds	r3, r3, #1
-	ldr	r2, .L39
+	ldr	r2, .L37+4
 	str	r3, [r2]
-.L37:
-	.loc 2 104 19 discriminator 1
-	ldr	r3, .L39
+.L35:
+	.loc 2 94 19 discriminator 1
+	ldr	r3, .L37+4
 	ldr	r3, [r3]
-	.loc 2 104 5 discriminator 1
+	.loc 2 94 5 discriminator 1
 	cmp	r3, #4
-	bls	.L38
-	.loc 2 111 1
+	bls	.L36
+	.loc 2 101 1
 	nop
 	adds	r7, r7, #8
 	.cfi_def_cfa_offset 8
@@ -756,13 +701,14 @@ InitThreads:
 	.cfi_def_cfa_register 13
 	@ sp needed
 	pop	{r7, pc}
-.L40:
+.L38:
 	.align	2
-.L39:
+.L37:
+	.word	startup_flag
 	.word	i
 	.word	threads
 	.cfi_endproc
-.LFE34:
+.LFE33:
 	.size	InitThreads, .-InitThreads
 	.align	1
 	.global	PendSV_Handler
@@ -772,8 +718,8 @@ InitThreads:
 	.fpu softvfp
 	.type	PendSV_Handler, %function
 PendSV_Handler:
-.LFB35:
-	.loc 2 113 1
+.LFB34:
+	.loc 2 103 1
 	.cfi_startproc
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -783,15 +729,41 @@ PendSV_Handler:
 	.cfi_offset 14, -4
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
-	.loc 2 114 5
+	.loc 2 104 9
+	ldr	r3, .L42
+	ldrb	r3, [r3]	@ zero_extendqisi2
+	.loc 2 104 8
+	cmp	r3, #0
+	beq	.L40
+	.loc 2 106 22
+	ldr	r3, .L42
+	movs	r2, #0
+	strb	r2, [r3]
+	b	.L41
+.L40:
+	.loc 2 110 9
+	.syntax unified
+@ 110 "src/kernel.c" 1
+	MRS   r0,  psp      
+	STMDB r0!, {r4-r11} 
+	
+@ 0 "" 2
+	.thumb
+	.syntax unified
+.L41:
+	.loc 2 113 5
 	bl	SelectNextTask
-	.loc 2 115 5
+	.loc 2 114 5
 	bl	ContexSwitch
-	.loc 2 116 1
+	.loc 2 115 1
 	nop
 	pop	{r7, pc}
+.L43:
+	.align	2
+.L42:
+	.word	startup_flag
 	.cfi_endproc
-.LFE35:
+.LFE34:
 	.size	PendSV_Handler, .-PendSV_Handler
 	.align	1
 	.global	SysTick_Handler
@@ -801,8 +773,8 @@ PendSV_Handler:
 	.fpu softvfp
 	.type	SysTick_Handler, %function
 SysTick_Handler:
-.LFB36:
-	.loc 2 118 1
+.LFB35:
+	.loc 2 117 1
 	.cfi_startproc
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -812,13 +784,13 @@ SysTick_Handler:
 	.cfi_offset 7, -4
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
-	.loc 2 121 5
-	ldr	r3, .L43
+	.loc 2 118 5
+	ldr	r3, .L45
 	ldr	r3, [r3, #4]
-	ldr	r2, .L43
+	ldr	r2, .L45
 	orr	r3, r3, #268435456
 	str	r3, [r2, #4]
-	.loc 2 122 1
+	.loc 2 119 1
 	nop
 	mov	sp, r7
 	.cfi_def_cfa_register 13
@@ -827,12 +799,12 @@ SysTick_Handler:
 	.cfi_restore 7
 	.cfi_def_cfa_offset 0
 	bx	lr
-.L44:
+.L46:
 	.align	2
-.L43:
+.L45:
 	.word	-536810240
 	.cfi_endproc
-.LFE36:
+.LFE35:
 	.size	SysTick_Handler, .-SysTick_Handler
 	.align	1
 	.global	SVC_Handler
@@ -842,8 +814,8 @@ SysTick_Handler:
 	.fpu softvfp
 	.type	SVC_Handler, %function
 SVC_Handler:
-.LFB37:
-	.loc 2 125 1
+.LFB36:
+	.loc 2 122 1
 	.cfi_startproc
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -853,39 +825,56 @@ SVC_Handler:
 	.cfi_offset 14, -4
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
-	.loc 2 126 17
-	bl	Get_SVC_Number
+	.loc 2 123 5
+	.syntax unified
+@ 123 "src/kernel.c" 1
+	MRS   r0,  psp      
+	STMDB r0!, {r4-r11} 
+	
+@ 0 "" 2
+	.loc 2 124 18
+	.thumb
+	.syntax unified
+	bl	GetSvcNumber
 	mov	r2, r0
-	.loc 2 126 15
-	ldr	r3, .L46
+	.loc 2 124 16
+	ldr	r3, .L51
 	str	r2, [r3]
-	.loc 2 127 5
-	ldr	r3, .L46+4
-	ldr	r3, [r3, #4]
-	ldr	r2, .L46+4
-	orr	r3, r3, #268435456
-	str	r3, [r2, #4]
-	.loc 2 129 1
+	.loc 2 125 5
+	ldr	r3, .L51
+	ldr	r3, [r3]
+	cmp	r3, #111
+	bne	.L50
+	.loc 2 128 9
+	bl	SelectNextTask
+	.loc 2 129 9
+	bl	ContexSwitch
+	.loc 2 130 9
+	b	.L49
+.L50:
+	.loc 2 133 9
+	nop
+.L49:
+	.loc 2 135 1
 	nop
 	pop	{r7, pc}
-.L47:
+.L52:
 	.align	2
-.L46:
+.L51:
 	.word	svc_number
-	.word	-536810240
 	.cfi_endproc
-.LFE37:
+.LFE36:
 	.size	SVC_Handler, .-SVC_Handler
 	.align	1
-	.global	Get_SVC_Number
+	.global	GetSvcNumber
 	.syntax unified
 	.thumb
 	.thumb_func
 	.fpu softvfp
-	.type	Get_SVC_Number, %function
-Get_SVC_Number:
-.LFB38:
-	.loc 2 132 1
+	.type	GetSvcNumber, %function
+GetSvcNumber:
+.LFB37:
+	.loc 2 138 1
 	.cfi_startproc
 	@ args = 0, pretend = 0, frame = 8
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -897,26 +886,26 @@ Get_SVC_Number:
 	.cfi_def_cfa_offset 16
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
-	.loc 2 133 15
+	.loc 2 139 15
 	movs	r3, #0
 	str	r3, [r7, #4]
-	.loc 2 134 5
+	.loc 2 140 5
 	.syntax unified
-@ 134 "src/kernel.c" 1
+@ 140 "src/kernel.c" 1
 	MRS R0, PSP
 	MOV r3, R0
 @ 0 "" 2
 	.thumb
 	.syntax unified
 	str	r3, [r7, #4]
-	.loc 2 137 28
+	.loc 2 143 27
 	ldr	r3, [r7, #4]
 	adds	r3, r3, #24
-	.loc 2 137 32
+	.loc 2 143 31
 	ldr	r3, [r3]
 	subs	r3, r3, #2
 	ldrb	r3, [r3]	@ zero_extendqisi2
-	.loc 2 138 1
+	.loc 2 144 1
 	mov	r0, r3
 	adds	r7, r7, #12
 	.cfi_def_cfa_offset 4
@@ -928,8 +917,8 @@ Get_SVC_Number:
 	.cfi_def_cfa_offset 0
 	bx	lr
 	.cfi_endproc
-.LFE38:
-	.size	Get_SVC_Number, .-Get_SVC_Number
+.LFE37:
+	.size	GetSvcNumber, .-GetSvcNumber
 .Letext0:
 	.file 3 "/home/witek/CODE/arm/gnu/arm-none-eabi/include/machine/_default_types.h"
 	.file 4 "/home/witek/CODE/arm/gnu/arm-none-eabi/include/sys/_stdint.h"
@@ -1581,7 +1570,7 @@ Get_SVC_Number:
 	.byte	0x1
 	.4byte	0x38
 	.byte	0x7
-	.byte	0xe
+	.byte	0x12
 	.byte	0x6
 	.4byte	0x528
 	.uleb128 0x19
@@ -1600,34 +1589,34 @@ Get_SVC_Number:
 	.uleb128 0x12
 	.byte	0x10
 	.byte	0x7
-	.byte	0x14
+	.byte	0x18
 	.byte	0x9
 	.4byte	0x566
 	.uleb128 0xc
 	.4byte	.LASF103
 	.byte	0x7
-	.byte	0x15
+	.byte	0x19
 	.byte	0xe
 	.4byte	0x99
 	.byte	0
 	.uleb128 0xc
 	.4byte	.LASF104
 	.byte	0x7
-	.byte	0x16
+	.byte	0x1a
 	.byte	0xf
 	.4byte	0x566
 	.byte	0x4
 	.uleb128 0xc
 	.4byte	.LASF105
 	.byte	0x7
-	.byte	0x17
+	.byte	0x1b
 	.byte	0x16
 	.4byte	0x4fd
 	.byte	0x8
 	.uleb128 0xc
 	.4byte	.LASF106
 	.byte	0x7
-	.byte	0x18
+	.byte	0x1c
 	.byte	0xf
 	.4byte	0x566
 	.byte	0xc
@@ -1638,68 +1627,68 @@ Get_SVC_Number:
 	.uleb128 0x3
 	.4byte	.LASF107
 	.byte	0x7
-	.byte	0x19
+	.byte	0x1d
 	.byte	0x2
 	.4byte	0x528
 	.uleb128 0x12
 	.byte	0x20
 	.byte	0x7
-	.byte	0x1d
+	.byte	0x21
 	.byte	0x9
 	.4byte	0x5e4
 	.uleb128 0x13
 	.ascii	"r0\000"
 	.byte	0x7
-	.byte	0x1e
+	.byte	0x22
 	.byte	0xc
 	.4byte	0x99
 	.byte	0
 	.uleb128 0x13
 	.ascii	"r1\000"
 	.byte	0x7
-	.byte	0x1f
+	.byte	0x23
 	.byte	0xc
 	.4byte	0x99
 	.byte	0x4
 	.uleb128 0x13
 	.ascii	"r2\000"
 	.byte	0x7
-	.byte	0x20
+	.byte	0x24
 	.byte	0xc
 	.4byte	0x99
 	.byte	0x8
 	.uleb128 0x13
 	.ascii	"r3\000"
 	.byte	0x7
-	.byte	0x21
+	.byte	0x25
 	.byte	0xc
 	.4byte	0x99
 	.byte	0xc
 	.uleb128 0x13
 	.ascii	"r12\000"
 	.byte	0x7
-	.byte	0x22
+	.byte	0x26
 	.byte	0xc
 	.4byte	0x99
 	.byte	0x10
 	.uleb128 0x13
 	.ascii	"lr\000"
 	.byte	0x7
-	.byte	0x23
+	.byte	0x27
 	.byte	0xc
 	.4byte	0x99
 	.byte	0x14
 	.uleb128 0x13
 	.ascii	"pc\000"
 	.byte	0x7
-	.byte	0x24
+	.byte	0x28
 	.byte	0xc
 	.4byte	0x99
 	.byte	0x18
 	.uleb128 0x13
 	.ascii	"psr\000"
 	.byte	0x7
-	.byte	0x25
+	.byte	0x29
 	.byte	0xc
 	.4byte	0x99
 	.byte	0x1c
@@ -1707,7 +1696,7 @@ Get_SVC_Number:
 	.uleb128 0x3
 	.4byte	.LASF108
 	.byte	0x7
-	.byte	0x26
+	.byte	0x2a
 	.byte	0x3
 	.4byte	0x578
 	.uleb128 0xf
@@ -1720,13 +1709,13 @@ Get_SVC_Number:
 	.uleb128 0x18
 	.4byte	.LASF109
 	.byte	0x7
-	.byte	0x28
+	.byte	0x2c
 	.byte	0x1b
 	.4byte	0x5f0
 	.uleb128 0x1b
 	.ascii	"i\000"
 	.byte	0x7
-	.byte	0x29
+	.byte	0x2d
 	.byte	0xa
 	.4byte	0x99
 	.uleb128 0x5
@@ -1735,7 +1724,7 @@ Get_SVC_Number:
 	.uleb128 0x1c
 	.4byte	.LASF110
 	.byte	0x7
-	.byte	0x2a
+	.byte	0x2e
 	.byte	0xa
 	.4byte	0x99
 	.uleb128 0x5
@@ -1744,7 +1733,7 @@ Get_SVC_Number:
 	.uleb128 0x1c
 	.4byte	.LASF111
 	.byte	0x7
-	.byte	0x2b
+	.byte	0x2f
 	.byte	0xa
 	.4byte	0x99
 	.uleb128 0x5
@@ -1753,7 +1742,7 @@ Get_SVC_Number:
 	.uleb128 0x1c
 	.4byte	.LASF112
 	.byte	0x7
-	.byte	0x2c
+	.byte	0x30
 	.byte	0xa
 	.4byte	0x99
 	.uleb128 0x5
@@ -1762,7 +1751,7 @@ Get_SVC_Number:
 	.uleb128 0x1c
 	.4byte	.LASF113
 	.byte	0x7
-	.byte	0x2d
+	.byte	0x31
 	.byte	0xa
 	.4byte	0x99
 	.uleb128 0x5
@@ -1771,27 +1760,36 @@ Get_SVC_Number:
 	.uleb128 0x1c
 	.4byte	.LASF114
 	.byte	0x7
-	.byte	0x2e
+	.byte	0x32
 	.byte	0xa
 	.4byte	0x99
 	.uleb128 0x5
 	.byte	0x3
 	.4byte	svc_number
+	.uleb128 0x1c
+	.4byte	.LASF115
+	.byte	0x7
+	.byte	0x33
+	.byte	0xa
+	.4byte	0x88
+	.uleb128 0x5
+	.byte	0x3
+	.4byte	startup_flag
 	.uleb128 0x1d
-	.4byte	.LASF123
+	.4byte	.LASF124
 	.byte	0x2
-	.byte	0x83
+	.byte	0x89
 	.byte	0xa
 	.4byte	0x99
-	.4byte	.LFB38
-	.4byte	.LFE38-.LFB38
+	.4byte	.LFB37
+	.4byte	.LFE37-.LFB37
 	.uleb128 0x1
 	.byte	0x9c
-	.4byte	0x6a0
+	.4byte	0x6b2
 	.uleb128 0x1e
-	.4byte	.LASF117
+	.4byte	.LASF118
 	.byte	0x2
-	.byte	0x85
+	.byte	0x8b
 	.byte	0xf
 	.4byte	0x566
 	.uleb128 0x2
@@ -1799,55 +1797,55 @@ Get_SVC_Number:
 	.sleb128 -12
 	.byte	0
 	.uleb128 0x1f
-	.4byte	.LASF126
+	.4byte	.LASF127
 	.byte	0x2
-	.byte	0x7c
-	.byte	0x6
-	.4byte	.LFB37
-	.4byte	.LFE37-.LFB37
-	.uleb128 0x1
-	.byte	0x9c
-	.uleb128 0x20
-	.4byte	.LASF115
-	.byte	0x2
-	.byte	0x75
+	.byte	0x79
 	.byte	0x6
 	.4byte	.LFB36
 	.4byte	.LFE36-.LFB36
 	.uleb128 0x1
 	.byte	0x9c
-	.uleb128 0x21
+	.uleb128 0x20
 	.4byte	.LASF116
 	.byte	0x2
-	.byte	0x70
+	.byte	0x74
 	.byte	0x6
 	.4byte	.LFB35
 	.4byte	.LFE35-.LFB35
 	.uleb128 0x1
 	.byte	0x9c
-	.uleb128 0x22
-	.4byte	.LASF120
+	.uleb128 0x21
+	.4byte	.LASF117
 	.byte	0x2
-	.byte	0x62
+	.byte	0x66
 	.byte	0x6
 	.4byte	.LFB34
 	.4byte	.LFE34-.LFB34
 	.uleb128 0x1
 	.byte	0x9c
-	.4byte	0x70b
-	.uleb128 0x1e
-	.4byte	.LASF118
+	.uleb128 0x22
+	.4byte	.LASF121
 	.byte	0x2
-	.byte	0x65
+	.byte	0x58
+	.byte	0x6
+	.4byte	.LFB33
+	.4byte	.LFE33-.LFB33
+	.uleb128 0x1
+	.byte	0x9c
+	.4byte	0x71d
+	.uleb128 0x1e
+	.4byte	.LASF119
+	.byte	0x2
+	.byte	0x5b
 	.byte	0xe
 	.4byte	0x99
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -12
 	.uleb128 0x1e
-	.4byte	.LASF119
+	.4byte	.LASF120
 	.byte	0x2
-	.byte	0x66
+	.byte	0x5c
 	.byte	0xe
 	.4byte	0x99
 	.uleb128 0x2
@@ -1855,19 +1853,19 @@ Get_SVC_Number:
 	.sleb128 -16
 	.byte	0
 	.uleb128 0x22
-	.4byte	.LASF121
-	.byte	0x2
-	.byte	0x5a
-	.byte	0x6
-	.4byte	.LFB33
-	.4byte	.LFE33-.LFB33
-	.uleb128 0x1
-	.byte	0x9c
-	.4byte	0x731
-	.uleb128 0x1e
 	.4byte	.LASF122
 	.byte	0x2
-	.byte	0x5c
+	.byte	0x4d
+	.byte	0x6
+	.4byte	.LFB32
+	.4byte	.LFE32-.LFB32
+	.uleb128 0x1
+	.byte	0x9c
+	.4byte	0x743
+	.uleb128 0x1e
+	.4byte	.LASF123
+	.byte	0x2
+	.byte	0x4f
 	.byte	0xe
 	.4byte	0x99
 	.uleb128 0x2
@@ -1875,30 +1873,30 @@ Get_SVC_Number:
 	.sleb128 -12
 	.byte	0
 	.uleb128 0x23
-	.4byte	.LASF124
+	.4byte	.LASF125
 	.byte	0x2
-	.byte	0x43
+	.byte	0x36
 	.byte	0x6
-	.4byte	.LFB32
-	.4byte	.LFE32-.LFB32
+	.4byte	.LFB31
+	.4byte	.LFE31-.LFB31
 	.uleb128 0x1
 	.byte	0x9c
-	.4byte	0x766
+	.4byte	0x778
 	.uleb128 0x24
 	.4byte	.LASF130
 	.byte	0x2
-	.byte	0x43
+	.byte	0x36
 	.byte	0x17
-	.4byte	0x766
+	.4byte	0x778
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -20
 	.uleb128 0x1e
-	.4byte	.LASF125
+	.4byte	.LASF126
 	.byte	0x2
-	.byte	0x45
+	.byte	0x38
 	.byte	0x17
-	.4byte	0x768
+	.4byte	0x77a
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -12
@@ -1908,19 +1906,10 @@ Get_SVC_Number:
 	.uleb128 0x1a
 	.byte	0x4
 	.4byte	0x5e4
-	.uleb128 0x26
-	.4byte	.LASF127
-	.byte	0x2
-	.byte	0x3e
-	.byte	0x6
-	.4byte	.LFB31
-	.4byte	.LFE31-.LFB31
-	.uleb128 0x1
-	.byte	0x9c
 	.uleb128 0x1f
 	.4byte	.LASF128
 	.byte	0x2
-	.byte	0x1a
+	.byte	0x19
 	.byte	0x6
 	.4byte	.LFB30
 	.4byte	.LFE30-.LFB30
@@ -1929,7 +1918,7 @@ Get_SVC_Number:
 	.uleb128 0x26
 	.4byte	.LASF129
 	.byte	0x2
-	.byte	0xa
+	.byte	0x9
 	.byte	0x6
 	.4byte	.LFB29
 	.4byte	.LFE29-.LFB29
@@ -2710,12 +2699,12 @@ Get_SVC_Number:
 	.ascii	"stackPointer\000"
 .LASF61:
 	.ascii	"EXTI15_10_IRQn\000"
-.LASF127:
-	.ascii	"Sleep\000"
 .LASF112:
 	.ascii	"task_id_adder\000"
 .LASF29:
 	.ascii	"EXTI2_IRQn\000"
+.LASF124:
+	.ascii	"GetSvcNumber\000"
 .LASF19:
 	.ascii	"PendSV_IRQn\000"
 .LASF26:
@@ -2734,7 +2723,7 @@ Get_SVC_Number:
 	.ascii	"RSERVED1\000"
 .LASF56:
 	.ascii	"SPI1_IRQn\000"
-.LASF117:
+.LASF118:
 	.ascii	"result\000"
 .LASF35:
 	.ascii	"DMA1_Channel4_IRQn\000"
@@ -2742,12 +2731,14 @@ Get_SVC_Number:
 	.ascii	"long long unsigned int\000"
 .LASF101:
 	.ascii	"HALTED\000"
-.LASF125:
+.LASF126:
 	.ascii	"process_frame\000"
 .LASF42:
 	.ascii	"CAN1_RX1_IRQn\000"
 .LASF40:
 	.ascii	"USB_HP_CAN1_TX_IRQn\000"
+.LASF115:
+	.ascii	"startup_flag\000"
 .LASF64:
 	.ascii	"IRQn_Type\000"
 .LASF110:
@@ -2756,7 +2747,7 @@ Get_SVC_Number:
 	.ascii	"stackPointerAdd\000"
 .LASF59:
 	.ascii	"USART2_IRQn\000"
-.LASF119:
+.LASF120:
 	.ascii	"new_psp\000"
 .LASF78:
 	.ascii	"CPUID\000"
@@ -2764,13 +2755,13 @@ Get_SVC_Number:
 	.ascii	"GNU C17 8.3.1 20190703 (release) [gcc-8-branch revi"
 	.ascii	"sion 273027] -mcpu=cortex-m3 -mthumb -mfloat-abi=so"
 	.ascii	"ft -march=armv7-m -ggdb -O0\000"
-.LASF124:
+.LASF125:
 	.ascii	"CreateTask\000"
 .LASF136:
 	.ascii	"SysTick_Config\000"
 .LASF88:
 	.ascii	"AFSR\000"
-.LASF126:
+.LASF127:
 	.ascii	"SVC_Handler\000"
 .LASF129:
 	.ascii	"SelectNextTask\000"
@@ -2794,11 +2785,11 @@ Get_SVC_Number:
 	.ascii	"DMA1_Channel1_IRQn\000"
 .LASF11:
 	.ascii	"uint8_t\000"
-.LASF122:
+.LASF123:
 	.ascii	"status\000"
 .LASF28:
 	.ascii	"EXTI1_IRQn\000"
-.LASF120:
+.LASF121:
 	.ascii	"InitThreads\000"
 .LASF63:
 	.ascii	"USBWakeUp_IRQn\000"
@@ -2810,7 +2801,7 @@ Get_SVC_Number:
 	.ascii	"SHCSR\000"
 .LASF102:
 	.ascii	"DEAD\000"
-.LASF115:
+.LASF116:
 	.ascii	"SysTick_Handler\000"
 .LASF83:
 	.ascii	"CFSR\000"
@@ -2878,7 +2869,7 @@ Get_SVC_Number:
 	.ascii	"priority\000"
 .LASF48:
 	.ascii	"TIM1_CC_IRQn\000"
-.LASF118:
+.LASF119:
 	.ascii	"current_msp\000"
 .LASF134:
 	.ascii	"src/kernel.c\000"
@@ -2892,17 +2883,15 @@ Get_SVC_Number:
 	.ascii	"BFAR\000"
 .LASF47:
 	.ascii	"TIM1_TRG_COM_IRQn\000"
-.LASF123:
-	.ascii	"Get_SVC_Number\000"
 .LASF80:
 	.ascii	"VTOR\000"
 .LASF53:
 	.ascii	"I2C1_ER_IRQn\000"
-.LASF121:
+.LASF122:
 	.ascii	"RunOS\000"
 .LASF20:
 	.ascii	"SysTick_IRQn\000"
-.LASF116:
+.LASF117:
 	.ascii	"PendSV_Handler\000"
 .LASF79:
 	.ascii	"ICSR\000"
