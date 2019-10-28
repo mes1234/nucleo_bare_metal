@@ -64,14 +64,14 @@ void task1()
 
 void task2()
 {
-  uint32_t volatile val1 = 0;
+  uint32_t volatile val1 = 30000;
   while (1)
   {
     val1 += 1;
-    if (val1 > 30000)
+    if (val1 > 60000)
     {
       ResetLED();
-      val1 = 0;
+      val1 = 30000;
     }
     else
     {
