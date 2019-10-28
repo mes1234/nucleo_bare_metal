@@ -47,7 +47,7 @@ void CreateTask(void *taskPointer)
 
 void RunOS()
 {
-    // uint32_t status = SysTick_Config(168000);
+    uint32_t status = SysTick_Config(368000);
     NVIC_SetPriority(PendSV_IRQn, 0xFF); // Set PendSV to lowest
     current_task_ID = 0;
     void (*starter)() = threads[current_task_ID].entryPoint;

@@ -57,7 +57,7 @@ void task1()
     }
     else
     {
-      Sleep();
+      // Sleep();
     }
   }
 }
@@ -75,7 +75,7 @@ void task2()
     }
     else
     {
-      Sleep();
+      // Sleep();
     }
   }
 }
