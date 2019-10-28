@@ -22,35 +22,6 @@ void SelectNextTask()
     } while (threads[next_task_ID].state == DEAD);
 }
 
-void ContexSwitch()
-{
-    //halt current working
-    if (threads[current_task_ID].state == RUNNING)
-    {
-        asm volatile("mrs %0, psp"
-                     : "=r"(threads[current_task_ID].stackPointer)
-                     :);
-        threads[current_task_ID].stackPointerAdd = __get_PSP();
-        threads[current_task_ID].state = HALTED;
-        current_task_ID = next_task_ID;
-    }
-    //start new task
-    if (threads[current_task_ID].state == NEW)
-    {
-        __set_PSP(threads[current_task_ID].stackPointer);
-        threads[current_task_ID].state = RUNNING;
-        return;
-    }
-    //start running halted task
-    if (threads[current_task_ID].state == HALTED)
-    {
-        __set_PSP(threads[current_task_ID].stackPointer);
-        threads[current_task_ID].state = RUNNING;
-        RestoreSoftwareStack();
-        return;
-    }
-}
-
 void CreateTask(void *taskPointer)
 {
     hw_stack_frame_t *process_frame;
@@ -76,18 +47,21 @@ void CreateTask(void *taskPointer)
 
 void RunOS()
 {
-    uint32_t status = SysTick_Config(168000);
+    // uint32_t status = SysTick_Config(168000);
     NVIC_SetPriority(PendSV_IRQn, 0xFF); // Set PendSV to lowest
     current_task_ID = 0;
-    __set_CONTROL(0x3);
-    while (1)
-    {
-    }
+    void (*starter)() = threads[current_task_ID].entryPoint;
+    SetPSP(threads[current_task_ID].stackPointer);
+    threads[current_task_ID].state = RUNNING;
+    asm volatile("MSR control, %0"
+                 :
+                 : "r"(0x3));
+    __ISB();
+    starter();
 }
 
 void InitThreads()
 {
-    startup_flag = 1;
     uint32_t current_msp = __get_MSP();
     uint32_t new_psp;
 
@@ -101,34 +75,50 @@ void InitThreads()
 }
 void PendSV_Handler(void)
 {
-    if (startup_flag)
+    BackupSoftwareStack();
+    //halt current working
+    GetPSP(threads[current_task_ID].stackPointer);
+    threads[current_task_ID].state = HALTED;
+    current_task_ID = next_task_ID;
+    //start running halted task
+    if (threads[current_task_ID].state == HALTED)
     {
-        startup_flag = 0;
+        SetPSP(threads[current_task_ID].stackPointer);
+        threads[current_task_ID].state = RUNNING;
+        RestoreSoftwareStack();
+        __ISB();
+        return;
     }
-    else
+    //start new task
+    if (threads[current_task_ID].state == NEW)
     {
-        BackupSoftwareStack();
+        SetPSP(threads[current_task_ID].stackPointer);
+        threads[current_task_ID].state = RUNNING;
+        return;
     }
-
-    SelectNextTask();
-    ContexSwitch();
 }
 void SysTick_Handler(void)
 {
+    SelectNextTask();
     ScheduleContextSwitch();
 }
 
 void SVC_Handler()
 {
-    BackupSoftwareStack();
+
     svc_number = GetSvcNumber();
     switch (svc_number)
     {
+    case 109:
+        GPIO_WriteBit(GPIOA, GPIO_Pin_5, Bit_RESET);
+        break;
+    case 110:
+        GPIO_WriteBit(GPIOA, GPIO_Pin_5, Bit_SET);
+        break;
     case 111:
         SelectNextTask();
-        ContexSwitch();
+        ScheduleContextSwitch();
         break;
-
     default:
         break;
     }

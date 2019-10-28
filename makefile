@@ -14,7 +14,7 @@ PERIPH=$(LIBROOT)/STM32F10x_StdPeriph_Driver/src
 STARTUP=$(DEVICE)/startup/gcc_ride7
 
 CC=arm-none-eabi-gcc
-CFLAGS=-c -O0 $(INCLUDES) -DSTM32F10X_MD -ggdb  -mcpu=cortex-m3 -mthumb
+CFLAGS=-c -O $(INCLUDES) -DSTM32F10X_MD -ggdb  -mcpu=cortex-m3 -mthumb
 
 
 build_debug: clean

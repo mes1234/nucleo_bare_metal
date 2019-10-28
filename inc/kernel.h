@@ -2,35 +2,44 @@
 
 #define THREAD_COUNT_MAX 5
 #define PSP_SIZE 0x1000
-#define SVC(code) asm volatile ("svc %[immediate]"::[immediate] "I" (code))
+#define SVC(code) asm volatile("svc %[immediate]" ::[immediate] "I"(code))
 #define ScheduleContextSwitch() SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk; // Set PendSV to pending
 #define Sleep() SVC(111);
-#define BackupSoftwareStack() asm volatile("MRS   r0,  psp      \n\t"\
+#define SetLED() SVC(110);
+#define ResetLED() SVC(109);
+#define BackupSoftwareStack() asm volatile("MRS   r0,  psp      \n\t" \
                                            "STMDB r0!, {r4-r11} \n\t");
-#define RestoreSoftwareStack() asm volatile("MRS   r0,  psp      \n\t"\
-                                            "LDMIA r0!, {r4-r11} \n\t");                                         
+#define RestoreSoftwareStack() asm volatile("MRS   r0,  psp      \n\t" \
+                                            "LDMIA r0!, {r4-r11} \n\t");
+#define SetPSP(value) asm volatile("msr psp, %0 \n\t" \
+                                   :                  \
+                                   : "r"(value));
+#define GetPSP(addr) asm volatile("mrs %0, psp \n\t" \
+                                  : "=r"(addr)       \
+                                  :);
 void InitThreads();
 void SetupKernel();
 void CreateTask(void *taskPointer);
-void ContexSwitch();
 uint32_t GetSvcNumber();
 
-enum threadState{
-    NEW,
-    RUNNING,
-    HALTED,
-    DEAD 
+enum threadState
+{
+  NEW,
+  RUNNING,
+  HALTED,
+  DEAD
 };
-typedef struct {
-    uint32_t stackPointer;
-    uint32_t* stackPointerAdd;
-    enum threadState state;
-    uint32_t *entryPoint;
-}ThreadControlBlock;
-
+typedef struct
+{
+  uint32_t stackPointer;
+  uint32_t *stackPointerAdd;
+  enum threadState state;
+  uint32_t *entryPoint;
+} ThreadControlBlock;
 
 //This defines the stack frame that is saved  by the hardware
-typedef struct {
+typedef struct
+{
   uint32_t r0;
   uint32_t r1;
   uint32_t r2;
@@ -48,4 +57,3 @@ uint32_t next_task_ID;
 uint32_t task_id_adder;
 uint32_t shared_value;
 uint32_t svc_number;
-uint8_t  startup_flag; 
