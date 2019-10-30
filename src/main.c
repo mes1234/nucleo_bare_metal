@@ -29,7 +29,7 @@ int main(void)
   setupLED();
   CreateTask(task1);
   CreateTask(task2);
-  // CreateTask(task3);
+  CreateTask(task3);
   RunOS();
 }
 
@@ -84,15 +84,5 @@ void task3()
 {
   int val = 0;
   int value = 0;
-  while (1)
-  {
-
-    val += 1;
-    if (val > 102000)
-    {
-      value = ~value;
-      GPIO_WriteBit(GPIOA, GPIO_Pin_5, value);
-      val = 0;
-    }
-  }
+  CreateTask(task1);
 }

@@ -4,7 +4,7 @@
 #define PSP_SIZE 0x1000
 #define SVC(code) asm volatile("svc %[immediate]" ::[immediate] "I"(code))
 #define ScheduleContextSwitch() SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk; // Set PendSV to pending
-#define Sleep() SVC(111);
+#define Sleep() SVC(001);
 #define SetLED() SVC(110);
 #define ResetLED() SVC(109);
 #define BackupSoftwareStack() asm volatile("MRS   r0,  psp      \n\t" \
@@ -17,6 +17,7 @@
 #define GetPSP(addr) asm volatile("mrs %0, psp \n\t" \
                                   : "=r"(addr)       \
                                   :);
+void CloseThread();
 void InitThreads();
 void SetupKernel();
 void CreateTask(void *taskPointer);
@@ -24,10 +25,11 @@ uint32_t GetSvcNumber();
 
 enum threadState
 {
+  FREE_SLOT,
   NEW,
   RUNNING,
   HALTED,
-  DEAD
+  COMPLETED,
 };
 typedef struct
 {

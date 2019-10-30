@@ -19,7 +19,7 @@ void SelectNextTask()
             task_id_adder = 1;
         }
         task_id_adder++;
-    } while (threads[next_task_ID].state == DEAD);
+    } while ((threads[next_task_ID].state == FREE_SLOT) || (threads[next_task_ID].state == COMPLETED));
 }
 
 void CreateTask(void *taskPointer)
@@ -27,7 +27,7 @@ void CreateTask(void *taskPointer)
     hw_stack_frame_t *process_frame;
     for (i = 0; i < THREAD_COUNT_MAX; i++)
     {
-        if (threads[i].state == DEAD)
+        if ((threads[i].state == FREE_SLOT) ||(threads[i].state == COMPLETED))
         {
             threads[i].state = NEW;
             threads[i].entryPoint = taskPointer;
@@ -38,7 +38,7 @@ void CreateTask(void *taskPointer)
             process_frame->r3 = 0;
             process_frame->r12 = 0;
             process_frame->pc = taskPointer;
-            process_frame->lr = taskPointer;
+            process_frame->lr = CloseThread;
             process_frame->psr = 0x21000000; //default PSR value
             break;
         }
@@ -59,6 +59,13 @@ void RunOS()
     __ISB();
     starter();
 }
+void CloseThread()
+{
+    SVC(000);
+    while (1)
+    {
+    }
+}
 
 void InitThreads()
 {
@@ -70,15 +77,18 @@ void InitThreads()
         new_psp = current_msp - (i + 1) * PSP_SIZE;
         threads[i].stackPointer = new_psp;
         threads[i].stackPointerAdd = threads[i].stackPointer;
-        threads[i].state = DEAD;
+        threads[i].state = FREE_SLOT;
     }
 }
 void PendSV_Handler(void)
 {
     BackupSoftwareStack();
     //halt current working
-    GetPSP(threads[current_task_ID].stackPointer);
-    threads[current_task_ID].state = HALTED;
+    if (threads[current_task_ID].state != COMPLETED)
+    {
+        GetPSP(threads[current_task_ID].stackPointer);
+        threads[current_task_ID].state = HALTED;
+    }
     current_task_ID = next_task_ID;
     //start running halted task
     if (threads[current_task_ID].state == HALTED)
@@ -109,16 +119,24 @@ void SVC_Handler()
     svc_number = GetSvcNumber();
     switch (svc_number)
     {
-    case 109:
-        GPIO_WriteBit(GPIOA, GPIO_Pin_5, Bit_RESET);
-        break;
-    case 110:
-        GPIO_WriteBit(GPIOA, GPIO_Pin_5, Bit_SET);
-        break;
-    case 111:
+    case 000:
+        // void CloseThread()
+        threads[current_task_ID].state = COMPLETED;
         SelectNextTask();
         ScheduleContextSwitch();
         break;
+    case 001:
+        // Sleep()
+        SelectNextTask();
+        ScheduleContextSwitch();
+        break;
+    case 109:
+        // Reset LED
+        GPIO_WriteBit(GPIOA, GPIO_Pin_5, Bit_RESET);
+        break;
+    case 110:
+        // Set LED
+        GPIO_WriteBit(GPIOA, GPIO_Pin_5, Bit_SET);
     default:
         break;
     }
