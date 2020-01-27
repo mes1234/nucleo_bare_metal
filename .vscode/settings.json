@@ -3,6 +3,7 @@
     "C_Cpp.default.includePath": [
         "lib/**",
         "src/**",
+        "inc/**",
         "/home/witek/CODE/arm/gnu/lib/gcc/arm-none-eabi/8.3.1/include/**",
         "/home/witek/CODE/arm/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/**"
     ],
