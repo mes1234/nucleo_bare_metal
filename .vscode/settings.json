@@ -16,6 +16,7 @@
         "setup_stack.h": "c",
         "kernel.h": "c",
         "type_traits": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "system_error": "c"
     }
 }

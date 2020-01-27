@@ -31,7 +31,7 @@
             ],
             "svdFile": "svd/STM32F103.svd",
             "preLaunchTask": "build",
-            "runToMain":true,
+            "runToMain":false,
             "showDevDebugOutput": true
         }
     ]

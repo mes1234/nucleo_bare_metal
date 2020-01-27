@@ -1,4 +1,4 @@
-void task1();
-void task2();
-void task3();
+int task1(int argc,  char* argv[]);
+int task2(int argc,  char* argv[]);
+int task3(int argc,  char* argv[]);
 void setupLED();

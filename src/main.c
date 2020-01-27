@@ -11,6 +11,7 @@ void _exit(int status)
   {
   }
 }
+
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_tim.h"
 #include "stm32f10x_rcc.h"
@@ -24,12 +25,14 @@ ThreadControlBlock threads[THREAD_COUNT_MAX];
 /* Main program. */
 int main(void)
 {
+  char* arglist[] ={"111fgdgfd","def","fg3","aaa","ddd"};
+  char* arglist2[] ={"f","def"};
   SystemInit();
   InitThreads();
   setupLED();
-  CreateTask(task1);
-  CreateTask(task2);
-  CreateTask(task3);
+  CreateTask(task1,arglist);
+  CreateTask(task2,arglist);
+  CreateTask(task3,arglist2);
   RunOS();
 }
 
@@ -44,8 +47,14 @@ void setupLED()
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
-void task1()
+int task1(int argc,  char* argv[])
 {
+  char* f1 = argv[0];
+  char* f2 = argv[1];
+  char* f3 = argv[2];
+  char* f4 = argv[3];
+  char* f5 = argv[4];
+
   uint32_t volatile val1 = 0;
   while (1)
   {
@@ -62,8 +71,13 @@ void task1()
   }
 }
 
-void task2()
+int task2(int argc,  char* argv[])
 {
+    char* f1 = argv[0];
+  char* f2 = argv[1];
+  char* f3 = argv[2];
+  char* f4 = argv[3];
+  char* f5 = argv[4];
   uint32_t volatile val1 = 30000;
   while (1)
   {
@@ -80,9 +94,15 @@ void task2()
   }
 }
 
-void task3()
+int task3(int argc,  char* argv[])
 {
+    char* f1 = argv[0];
+  char* f2 = argv[1];
+  char* f3 = argv[2];
+  char* f4 = argv[3];
+  char* f5 = argv[4];
   int val = 0;
   int value = 0;
-  CreateTask(task1);
+  CreateTask(task1,argv);
+  return 0;
 }

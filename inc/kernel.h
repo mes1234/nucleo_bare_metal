@@ -20,7 +20,7 @@
 void CloseThread();
 void InitThreads();
 void SetupKernel();
-void CreateTask(void *taskPointer);
+void CreateTask(void *taskPointer,char** argv);
 uint32_t GetSvcNumber();
 
 enum threadState

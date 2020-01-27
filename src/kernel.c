@@ -22,18 +22,19 @@ void SelectNextTask()
     } while ((threads[next_task_ID].state == FREE_SLOT) || (threads[next_task_ID].state == COMPLETED));
 }
 
-void CreateTask(void *taskPointer)
+void CreateTask(void *taskPointer, char* argv[])
 {
+    int argc = 5;
     hw_stack_frame_t *process_frame;
     for (i = 0; i < THREAD_COUNT_MAX; i++)
     {
-        if ((threads[i].state == FREE_SLOT) ||(threads[i].state == COMPLETED))
+        if ((threads[i].state == FREE_SLOT) || (threads[i].state == COMPLETED))
         {
             threads[i].state = NEW;
             threads[i].entryPoint = taskPointer;
             process_frame = (hw_stack_frame_t *)(threads[i].stackPointer);
-            process_frame->r0 = 0;
-            process_frame->r1 = 0;
+            process_frame->r0 = argc;
+            process_frame->r1 = argv;
             process_frame->r2 = 0;
             process_frame->r3 = 0;
             process_frame->r12 = 0;
@@ -50,15 +51,16 @@ void RunOS()
     uint32_t status = SysTick_Config(368000);
     NVIC_SetPriority(PendSV_IRQn, 0xFF); // Set PendSV to lowest
     current_task_ID = 0;
-    void (*starter)() = threads[current_task_ID].entryPoint;
-    SetPSP(threads[current_task_ID].stackPointer);
-    threads[current_task_ID].state = RUNNING;
     asm volatile("MSR control, %0"
                  :
                  : "r"(0x3));
     __ISB();
-    starter();
+    Sleep();
+    
+
 }
+
+
 void CloseThread()
 {
     SVC(000);
@@ -84,7 +86,7 @@ void PendSV_Handler(void)
 {
     BackupSoftwareStack();
     //halt current working
-    if (threads[current_task_ID].state != COMPLETED)
+    if ((threads[current_task_ID].state != COMPLETED) && (threads[current_task_ID].state != NEW))
     {
         GetPSP(threads[current_task_ID].stackPointer);
         threads[current_task_ID].state = HALTED;
