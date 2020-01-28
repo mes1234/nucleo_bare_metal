@@ -22,9 +22,8 @@ void SelectNextTask()
     } while ((threads[next_task_ID].state == FREE_SLOT) || (threads[next_task_ID].state == COMPLETED));
 }
 
-void CreateTask(void *taskPointer, char* argv[])
+void CreateTask(void *taskPointer,int argc, char* argv[])
 {
-    int argc = 5;
     hw_stack_frame_t *process_frame;
     for (i = 0; i < THREAD_COUNT_MAX; i++)
     {

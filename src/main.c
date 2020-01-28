@@ -25,14 +25,14 @@ ThreadControlBlock threads[THREAD_COUNT_MAX];
 /* Main program. */
 int main(void)
 {
-  char* arglist[] ={"111fgdgfd","def","fg3","aaa","ddd"};
-  char* arglist2[] ={"f","def"};
+  char* arglist[] ={"a","ff"};
+  char* arglist2[] ={"f","def","ss"};
   SystemInit();
   InitThreads();
   setupLED();
-  CreateTask(task1,arglist);
-  CreateTask(task2,arglist);
-  CreateTask(task3,arglist2);
+  CreateTask(task1,ARGV_SIZE(arglist),arglist);
+  CreateTask(task2,ARGV_SIZE(arglist),arglist);
+  CreateTask(task3,ARGV_SIZE(arglist2),arglist2);
   RunOS();
 }
 
@@ -96,7 +96,7 @@ int task2(int argc,  char* argv[])
 
 int task3(int argc,  char* argv[])
 {
-    char* f1 = argv[0];
+  char* f1 = argv[0];
   char* f2 = argv[1];
   char* f3 = argv[2];
   char* f4 = argv[3];

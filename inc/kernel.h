@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+#define ARGV_SIZE(arr)  sizeof(arr)/sizeof(arr[0])
 #define THREAD_COUNT_MAX 5
 #define PSP_SIZE 0x1000
 #define SVC(code) asm volatile("svc %[immediate]" ::[immediate] "I"(code))
@@ -20,7 +21,7 @@
 void CloseThread();
 void InitThreads();
 void SetupKernel();
-void CreateTask(void *taskPointer,char** argv);
+void CreateTask(void *taskPointer,int argc,char** argv);
 uint32_t GetSvcNumber();
 
 enum threadState
