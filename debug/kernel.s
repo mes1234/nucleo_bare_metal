@@ -476,7 +476,7 @@ RunOS:
 	add	r7, sp, #0
 	.cfi_def_cfa_register 7
 	.loc 2 50 23
-	ldr	r0, .L27
+	mov	r0, #3680
 	bl	SysTick_Config
 	str	r0, [r7, #4]
 	.loc 2 51 5
@@ -484,7 +484,7 @@ RunOS:
 	mvn	r0, #1
 	bl	NVIC_SetPriority
 	.loc 2 52 21
-	ldr	r3, .L27+4
+	ldr	r3, .L27
 	movs	r2, #0
 	str	r2, [r3]
 	.loc 2 53 5
@@ -515,7 +515,6 @@ RunOS:
 .L28:
 	.align	2
 .L27:
-	.word	368000
 	.word	current_task_ID
 	.cfi_endproc
 .LFE31:

@@ -52,14 +52,15 @@ int task1(int argc, char *argv[])
   char *f1 = argv[0];
   char *f2 = argv[1];
 
-  uint32_t volatile val1 = 0;
+  int val1 = 0;
   while (1)
   {
+    SetLED();
     val1 += 1;
     if (val1 > 1500)
     {
-      SetLED();
       val1 = 0;
+      SetLED();
     }
   }
 }
@@ -69,14 +70,14 @@ int task2(int argc, char *argv[])
   char *f1 = argv[0];
   char *f2 = argv[1];
 
-  uint32_t volatile val1 = 0;
+  int val = 0;
   while (1)
   {
-    val1 += 1;
-    if (val1 > 3000)
+    val += 1;
+    if (val > 3000)
     {
       ResetLED();
-      val1 = 0;
+      val = 0;
     }
   }
 }
