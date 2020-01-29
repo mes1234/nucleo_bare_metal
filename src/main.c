@@ -55,9 +55,8 @@ int task1(int argc, char *argv[])
   int val1 = 0;
   while (1)
   {
-    SetLED();
     val1 += 1;
-    if (val1 > 1500)
+    if (val1 > 302000)
     {
       val1 = 0;
       SetLED();
@@ -74,7 +73,7 @@ int task2(int argc, char *argv[])
   while (1)
   {
     val += 1;
-    if (val > 3000)
+    if (val > 702000)
     {
       ResetLED();
       val = 0;
