@@ -25,14 +25,14 @@ ThreadControlBlock threads[THREAD_COUNT_MAX];
 /* Main program. */
 int main(void)
 {
-  char* arglist[] ={"a","ff"};
-  char* arglist2[] ={"f","def","ss"};
+  char *arglist[] = {"a", "ff"};
+  char *arglist2[] = {"f", "def", "ss"};
   SystemInit();
   InitThreads();
   setupLED();
-  CreateTask(task1,ARGV_SIZE(arglist),arglist);
-  CreateTask(task2,ARGV_SIZE(arglist),arglist);
-  CreateTask(task3,ARGV_SIZE(arglist2),arglist2);
+  CreateTask(task1, ARGV_SIZE(arglist), arglist);
+  CreateTask(task2, ARGV_SIZE(arglist), arglist);
+  // CreateTask(task3, ARGV_SIZE(arglist2), arglist2);
   RunOS();
 }
 
@@ -47,60 +47,45 @@ void setupLED()
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
-int task1(int argc,  char* argv[])
+int task1(int argc, char *argv[])
 {
-  char* f1 = argv[0];
-  char* f2 = argv[1];
-  char* f3 = argv[2];
-  char* f4 = argv[3];
-  char* f5 = argv[4];
+  char *f1 = argv[0];
+  char *f2 = argv[1];
 
   uint32_t volatile val1 = 0;
   while (1)
   {
     val1 += 1;
-    if (val1 > 15000)
+    if (val1 > 1500)
     {
       SetLED();
       val1 = 0;
     }
-    else
-    {
-      // Sleep();
-    }
   }
 }
 
-int task2(int argc,  char* argv[])
+int task2(int argc, char *argv[])
 {
-    char* f1 = argv[0];
-  char* f2 = argv[1];
-  char* f3 = argv[2];
-  char* f4 = argv[3];
-  char* f5 = argv[4];
-  uint32_t volatile val1 = 30000;
+  char *f1 = argv[0];
+  char *f2 = argv[1];
+
+  uint32_t volatile val1 = 0;
   while (1)
   {
     val1 += 1;
-    if (val1 > 60000)
+    if (val1 > 3000)
     {
       ResetLED();
-      val1 = 30000;
-    }
-    else
-    {
-      // Sleep();
+      val1 = 0;
     }
   }
 }
 
-int task3(int argc,  char* argv[])
+int task3(int argc, char *argv[])
 {
-  char* f1 = argv[0];
-  char* f2 = argv[1];
-  char* f3 = argv[2];
-  char* f4 = argv[3];
-  char* f5 = argv[4];
+  char *f1 = argv[0];
+  char *f2 = argv[1];
+
   int val = 0;
   int value = 0;
   // CreateTask(task1,argv);
