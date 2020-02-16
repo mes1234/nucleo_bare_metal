@@ -30,10 +30,13 @@ int main(void)
   SystemInit();
   InitThreads();
   setupLED();
-  CreateTask(task1, ARGV_SIZE(arglist), arglist);
   CreateTask(task2, ARGV_SIZE(arglist), arglist);
-  // CreateTask(task3, ARGV_SIZE(arglist2), arglist2);
+  CreateTask(idle_task, ARGV_SIZE(arglist), arglist);
   RunOS();
+  while (1)
+  {
+    Sleep();
+  }
 }
 
 void setupLED()
@@ -47,21 +50,28 @@ void setupLED()
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
+int idle_task(int argc, char *argv[])
+{
+  while (1)
+  {
+    ;
+  }
+}
+
 int task1(int argc, char *argv[])
 {
   char *f1 = argv[0];
   char *f2 = argv[1];
 
-  int val1 = 0;
-  while (1)
+  ResetLED();
+  uint32_t val = 0;
+  while (val < 950000)
   {
-    val1 += 1;
-    if (val1 > 302000)
-    {
-      val1 = 0;
-      SetLED();
-    }
+    val = val + 1;
   }
+
+  CreateTask(task2, 2, argv);
+  return;
 }
 
 int task2(int argc, char *argv[])
@@ -69,25 +79,13 @@ int task2(int argc, char *argv[])
   char *f1 = argv[0];
   char *f2 = argv[1];
 
-  int val = 0;
-  while (1)
+  SetLED();
+  uint32_t val = 0;
+  while (val < 950000)
   {
-    val += 1;
-    if (val > 702000)
-    {
-      ResetLED();
-      val = 0;
-    }
+    val = val + 1;
   }
-}
 
-int task3(int argc, char *argv[])
-{
-  char *f1 = argv[0];
-  char *f2 = argv[1];
-
-  int val = 0;
-  int value = 0;
-  // CreateTask(task1,argv);
-  return 0;
+  CreateTask(task1, 2, argv);
+  return;
 }

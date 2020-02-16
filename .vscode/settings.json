@@ -17,6 +17,8 @@
         "kernel.h": "c",
         "type_traits": "c",
         "stdint.h": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "atomic": "cpp",
+        "cstdint": "cpp"
     }
 }

@@ -2,7 +2,7 @@
 
 #define ARGV_SIZE(arr)  sizeof(arr)/sizeof(arr[0])
 #define THREAD_COUNT_MAX 5
-#define PSP_SIZE 0x1000
+#define PSP_SIZE 0x100
 #define SVC(code) asm volatile("svc %[immediate]" ::[immediate] "I"(code))
 #define ScheduleContextSwitch() SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk; // Set PendSV to pending
 #define Sleep() SVC(001);
@@ -34,8 +34,10 @@ enum threadState
 };
 typedef struct
 {
+  uint32_t stackPointerClean;
   uint32_t stackPointer;
   uint32_t *stackPointerAdd;
+  uint32_t *stackPointerCleanAdd;
   enum threadState state;
   uint32_t *entryPoint;
 } ThreadControlBlock;

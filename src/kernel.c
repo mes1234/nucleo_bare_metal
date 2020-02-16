@@ -8,18 +8,15 @@
 
 void SelectNextTask()
 {
-    task_id_adder = 1;
-
+    next_task_ID = current_task_ID;
     do
     {
-        next_task_ID = current_task_ID + task_id_adder;
+        next_task_ID = next_task_ID + 1;
         if (next_task_ID == THREAD_COUNT_MAX)
         {
             next_task_ID = 0;
-            task_id_adder = 1;
         }
-        task_id_adder++;
-    } while ((threads[next_task_ID].state == FREE_SLOT) || (threads[next_task_ID].state == COMPLETED));
+    } while ((threads[next_task_ID].state == FREE_SLOT) || (threads[next_task_ID].state == COMPLETED) || (threads[next_task_ID].state == RUNNING) );
 }
 
 void CreateTask(void *taskPointer,int argc, char* argv[])
@@ -31,7 +28,7 @@ void CreateTask(void *taskPointer,int argc, char* argv[])
         {
             threads[i].state = NEW;
             threads[i].entryPoint = taskPointer;
-            process_frame = (hw_stack_frame_t *)(threads[i].stackPointer);
+            process_frame = (hw_stack_frame_t *)(threads[i].stackPointerClean);
             process_frame->r0 = argc;
             process_frame->r1 = argv;
             process_frame->r2 = 0;
@@ -53,8 +50,7 @@ void RunOS()
     asm volatile("MSR control, %0"
                  :
                  : "r"(0x3));
-    __ISB();
-    Sleep();
+    return;
     
 
 }
@@ -77,7 +73,9 @@ void InitThreads()
     {
         new_psp = current_msp - (i + 1) * PSP_SIZE;
         threads[i].stackPointer = new_psp;
+        threads[i].stackPointerClean = threads[i].stackPointer;
         threads[i].stackPointerAdd = threads[i].stackPointer;
+        threads[i].stackPointerCleanAdd = threads[i].stackPointerClean;
         threads[i].state = FREE_SLOT;
     }
 }
@@ -88,6 +86,7 @@ void PendSV_Handler(void)
     if ((threads[current_task_ID].state != COMPLETED) && (threads[current_task_ID].state != NEW))
     {
         GetPSP(threads[current_task_ID].stackPointer);
+        threads[current_task_ID].stackPointerAdd = threads[current_task_ID].stackPointer;
         threads[current_task_ID].state = HALTED;
     }
     current_task_ID = next_task_ID;
@@ -103,7 +102,7 @@ void PendSV_Handler(void)
     //start new task
     if (threads[current_task_ID].state == NEW)
     {
-        SetPSP(threads[current_task_ID].stackPointer);
+        SetPSP(threads[current_task_ID].stackPointerClean);
         threads[current_task_ID].state = RUNNING;
         return;
     }
