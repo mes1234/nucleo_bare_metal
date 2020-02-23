@@ -2,9 +2,12 @@
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_tim.h"
 #include "stm32f10x_rcc.h"
+#include "stm32f10x_usart.h"
 #include "stm32f10x.h"
 #include "core_cm3.h"
 #include "kernel.h"
+
+char *PrintBuf;
 
 void SelectNextTask()
 {
@@ -16,10 +19,10 @@ void SelectNextTask()
         {
             next_task_ID = 0;
         }
-    } while ((threads[next_task_ID].state == FREE_SLOT) || (threads[next_task_ID].state == COMPLETED) || (threads[next_task_ID].state == RUNNING) );
+    } while ((threads[next_task_ID].state == FREE_SLOT) || (threads[next_task_ID].state == COMPLETED) || (threads[next_task_ID].state == RUNNING));
 }
 
-void CreateTask(void *taskPointer,int argc, char* argv[])
+void CreateTask(void *taskPointer, int argc, char *argv[])
 {
     hw_stack_frame_t *process_frame;
     for (i = 0; i < THREAD_COUNT_MAX; i++)
@@ -44,23 +47,21 @@ void CreateTask(void *taskPointer,int argc, char* argv[])
 
 void RunOS()
 {
-    uint32_t status = SysTick_Config(3680);
+    uint32_t status = SysTick_Config(36000);
     NVIC_SetPriority(PendSV_IRQn, 0xFF); // Set PendSV to lowest
     current_task_ID = 0;
     asm volatile("MSR control, %0"
                  :
                  : "r"(0x3));
     return;
-    
-
 }
-
 
 void CloseThread()
 {
     SVC(000);
     while (1)
     {
+        ;
     }
 }
 
@@ -123,12 +124,14 @@ void SVC_Handler()
         // void CloseThread()
         threads[current_task_ID].state = COMPLETED;
         SelectNextTask();
-        ScheduleContextSwitch();
+        // ScheduleContextSwitch();
+        PendSV_Handler();
         break;
     case 001:
         // Sleep()
         SelectNextTask();
-        ScheduleContextSwitch();
+        PendSV_Handler();
+        // ScheduleContextSwitch();
         break;
     case 109:
         // Reset LED
@@ -137,6 +140,10 @@ void SVC_Handler()
     case 110:
         // Set LED
         GPIO_WriteBit(GPIOA, GPIO_Pin_5, Bit_SET);
+        break;
+    case 112:
+        start_uart();
+        break;
     default:
         break;
     }
@@ -149,4 +156,35 @@ uint32_t GetSvcNumber()
                  "MOV %0, R0"
                  : "=r"(result));
     return ((char *)result[6])[-2];
+}
+
+
+
+
+
+
+
+void start_uart()
+{
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
+    GPIO_InitTypeDef gpio;
+
+    GPIO_StructInit(&gpio);
+    gpio.GPIO_Pin = GPIO_Pin_2;
+    gpio.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIOA, &gpio);
+
+    gpio.GPIO_Pin = GPIO_Pin_3;
+    gpio.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOA, &gpio);
+
+    USART_InitTypeDef uart;
+
+    USART_StructInit(&uart);
+    uart.USART_BaudRate = 115200;
+    USART_Init(USART2, &uart);
+
+    USART_Cmd(USART2, ENABLE);
+    return;
 }

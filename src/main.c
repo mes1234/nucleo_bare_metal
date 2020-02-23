@@ -12,6 +12,7 @@ void _exit(int status)
   }
 }
 
+#include "stm32f10x_usart.h"
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_tim.h"
 #include "stm32f10x_rcc.h"
@@ -19,6 +20,7 @@ void _exit(int status)
 #include "core_cm3.h"
 #include "kernel.h"
 #include "main.h"
+#include "print.h"
 
 ThreadControlBlock threads[THREAD_COUNT_MAX];
 
@@ -30,12 +32,16 @@ int main(void)
   SystemInit();
   InitThreads();
   setupLED();
-  CreateTask(task2, ARGV_SIZE(arglist), arglist);
   CreateTask(idle_task, ARGV_SIZE(arglist), arglist);
+  CreateTask(S_print, ARGV_SIZE(arglist), arglist);
+  CreateTask(task2, ARGV_SIZE(arglist), arglist);
+  CreateTask(startup, ARGV_SIZE(arglist), arglist);
+
   RunOS();
   while (1)
   {
-    Sleep();
+    ;
+    // sys_Sleep();
   }
 }
 
@@ -50,42 +56,54 @@ void setupLED()
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
+int startup(int argc, char *argv[])
+{
+  sys_StartUart();
+  print("\n\nWKOSss_started_!\n\n");
+  print("\n\n###_START_###\n\n");
+  return;
+}
+
+
+	
+	
+
+
 int idle_task(int argc, char *argv[])
 {
+  print("idle\n");
   while (1)
   {
     ;
+    // print("idling");
+    // sys_Sleep();
   }
-}
-
-int task1(int argc, char *argv[])
-{
-  char *f1 = argv[0];
-  char *f2 = argv[1];
-
-  ResetLED();
-  uint32_t val = 0;
-  while (val < 950000)
-  {
-    val = val + 1;
-  }
-
-  CreateTask(task2, 2, argv);
-  return;
 }
 
 int task2(int argc, char *argv[])
 {
+  print("t2\n");
   char *f1 = argv[0];
   char *f2 = argv[1];
 
-  SetLED();
+  sys_SetLED();
   uint32_t val = 0;
-  while (val < 950000)
+  while (1)
   {
-    val = val + 1;
+    while (val < 350000)
+    {
+      val = val + 1;
+    }
+    val = 0;
+    sys_SetLED();
+    print("On\n");
+    while (val < 350000)
+    {
+      val = val + 1;
+    }
+    val = 0;
+    sys_ResetLED();
+    print("Off\n");
   }
-
-  CreateTask(task1, 2, argv);
   return;
 }

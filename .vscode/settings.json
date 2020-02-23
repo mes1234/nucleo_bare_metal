@@ -19,6 +19,7 @@
         "stdint.h": "c",
         "system_error": "c",
         "atomic": "cpp",
-        "cstdint": "cpp"
+        "cstdint": "cpp",
+        "stm32f10x_usart.h": "c"
     }
 }

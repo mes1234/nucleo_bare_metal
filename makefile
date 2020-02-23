@@ -22,10 +22,12 @@ build_debug: clean
 	@echo "Build debug image"
 	$(CC) $(CFLAGS) $(PERIPH)/stm32f10x_gpio.c -o obj/stm32f10x_gpio.o 
 	$(CC) $(CFLAGS) $(PERIPH)/stm32f10x_rcc.c  -o obj/stm32f10x_rcc.o 
+	$(CC) $(CFLAGS) $(PERIPH)/stm32f10x_usart.c  -o obj/stm32f10x_usart.o 
 	$(CC) $(CFLAGS) $(DEVICE)/system_stm32f10x.c -o obj/system_stm32f10x.o
 	$(CC) $(CFLAGS) $(CORE)/core_cm3.c -o obj/core_cm3.o
 	$(CC) $(CFLAGS) src/main.c -o obj/main.o
 	$(CC) $(CFLAGS) src/kernel.c -o obj/kernel.o
+	$(CC) $(CFLAGS) src/print.c -o obj/print.o
 	arm-none-eabi-as -mcpu=cortex-m3 -mthumb -o obj/startup.o $(STARTUP)/startup_stm32f10x_md.s
 	arm-none-eabi-ld -Tstartup/stm32.ld -o exec/main.elf obj/*.o
 	arm-none-eabi-objcopy -O binary exec/main.elf exec/main.bin

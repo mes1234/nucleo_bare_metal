@@ -5,9 +5,10 @@
 #define PSP_SIZE 0x100
 #define SVC(code) asm volatile("svc %[immediate]" ::[immediate] "I"(code))
 #define ScheduleContextSwitch() SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk; // Set PendSV to pending
-#define Sleep() SVC(001);
-#define SetLED() SVC(110);
-#define ResetLED() SVC(109);
+#define sys_Sleep() SVC(001);
+#define sys_SetLED() SVC(110);
+#define sys_ResetLED() SVC(109);
+#define sys_StartUart() SVC(112);
 #define BackupSoftwareStack() asm volatile("MRS   r0,  psp      \n\t" \
                                            "STMDB r0!, {r4-r11} \n\t");
 #define RestoreSoftwareStack() asm volatile("MRS   r0,  psp      \n\t" \
@@ -18,6 +19,7 @@
 #define GetPSP(addr) asm volatile("mrs %0, psp \n\t" \
                                   : "=r"(addr)       \
                                   :);
+
 void CloseThread();
 void InitThreads();
 void SetupKernel();
@@ -62,3 +64,4 @@ uint32_t next_task_ID;
 uint32_t task_id_adder;
 uint32_t shared_value;
 uint32_t svc_number;
+
