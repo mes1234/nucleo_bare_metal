@@ -32,10 +32,11 @@ int main(void)
   SystemInit();
   InitThreads();
   setupLED();
-  CreateTask(idle_task, ARGV_SIZE(arglist), arglist);
+  // CreateTask(idle_task, ARGV_SIZE(arglist), arglist);
+  CreateTask(startup, ARGV_SIZE(arglist), arglist);
   CreateTask(S_print, ARGV_SIZE(arglist), arglist);
   CreateTask(task2, ARGV_SIZE(arglist), arglist);
-  CreateTask(startup, ARGV_SIZE(arglist), arglist);
+  CreateTask(task1, ARGV_SIZE(arglist), arglist);
 
   RunOS();
   while (1)
@@ -59,13 +60,25 @@ void setupLED()
 int startup(int argc, char *argv[])
 {
   sys_StartUart();
-  print("\n\nWKOSss_started_!\n\n");
-  print("\n\n###_START_###\n\n");
+  // print("\n\nWKOSss_started_!\n\n");
+  // print("\n\n###_START_###\n\n");
   return;
 }
 
 
-	
+int task1(int argc, char *argv[])
+{
+uint32_t val = 0;
+  while (1)
+  {
+    while (val < 350000)
+    {
+      val = val + 1;
+    }
+    print("idling\n");
+    val = 0;
+  }
+}	
 	
 
 

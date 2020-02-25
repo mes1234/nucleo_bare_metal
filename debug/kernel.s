@@ -244,7 +244,7 @@ SelectNextTask:
 	ldr	r3, .L16+4
 	ldr	r3, [r3]
 	.loc 2 18 12
-	cmp	r3, #5
+	cmp	r3, #6
 	bne	.L14
 	.loc 2 20 26
 	ldr	r3, .L16+4
@@ -455,7 +455,7 @@ CreateTask:
 	ldr	r3, .L24
 	ldr	r3, [r3]
 	.loc 2 28 5 discriminator 1
-	cmp	r3, #4
+	cmp	r3, #5
 	bls	.L23
 .L22:
 	.loc 2 46 1
@@ -602,7 +602,7 @@ InitThreads:
 	ldr	r3, .L35
 	ldr	r3, [r3]
 	adds	r3, r3, #1
-	lsls	r3, r3, #8
+	lsls	r3, r3, #9
 	.loc 2 75 17 discriminator 3
 	ldr	r2, [r7, #4]
 	subs	r3, r2, r3
@@ -716,7 +716,7 @@ InitThreads:
 	ldr	r3, .L35
 	ldr	r3, [r3]
 	.loc 2 73 5 discriminator 1
-	cmp	r3, #4
+	cmp	r3, #5
 	bls	.L34
 	.loc 2 82 1
 	nop
@@ -2433,7 +2433,7 @@ start_uart:
 	.4byte	0x8e1
 	.uleb128 0x10
 	.4byte	0x8d
-	.byte	0x4
+	.byte	0x5
 	.byte	0
 	.uleb128 0x18
 	.4byte	.LASF149

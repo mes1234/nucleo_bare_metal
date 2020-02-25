@@ -1,8 +1,8 @@
 #include <stdint.h>
 
 #define ARGV_SIZE(arr)  sizeof(arr)/sizeof(arr[0])
-#define THREAD_COUNT_MAX 5
-#define PSP_SIZE 0x100
+#define THREAD_COUNT_MAX 6
+#define PSP_SIZE 0x200
 #define SVC(code) asm volatile("svc %[immediate]" ::[immediate] "I"(code))
 #define ScheduleContextSwitch() SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk; // Set PendSV to pending
 #define sys_Sleep() SVC(001);

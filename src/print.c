@@ -5,11 +5,11 @@ char *PrintBuf = 0x0;
 
 int S_print(int argc, char *argv[])
 {
-    while (1)
-    {
-        PrintBuf = 0x0;
-        sys_Sleep();
-    }
+    // while (1)
+    // {
+    //     PrintBuf = 0x0;
+    //     sys_Sleep();
+    // }
 
     while (1)
     {
