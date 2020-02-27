@@ -47,7 +47,7 @@ void CreateTask(void *taskPointer, int argc, char *argv[])
 
 void RunOS()
 {
-    uint32_t status = SysTick_Config(36000);
+    uint32_t status = SysTick_Config(700000);
     NVIC_SetPriority(PendSV_IRQn, 0xFF); // Set PendSV to lowest
     current_task_ID = 0;
     asm volatile("MSR control, %0"
@@ -123,15 +123,15 @@ void SVC_Handler()
     case 000:
         // void CloseThread()
         threads[current_task_ID].state = COMPLETED;
-        SelectNextTask();
-        // ScheduleContextSwitch();
-        PendSV_Handler();
+        // SelectNextTask();
+        ScheduleContextSwitch();
+        // PendSV_Handler();
         break;
     case 001:
         // Sleep()
         SelectNextTask();
-        PendSV_Handler();
-        // ScheduleContextSwitch();
+        // PendSV_Handler();
+        ScheduleContextSwitch();
         break;
     case 109:
         // Reset LED
@@ -143,6 +143,9 @@ void SVC_Handler()
         break;
     case 112:
         start_uart();
+        break;
+    case 113:
+        setupLED();
         break;
     default:
         break;
@@ -159,7 +162,16 @@ uint32_t GetSvcNumber()
 }
 
 
-
+void setupLED()
+{
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_StructInit(&GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+}
 
 
 

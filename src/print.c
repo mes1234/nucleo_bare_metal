@@ -15,8 +15,7 @@ int S_print(int argc, char *argv[])
     {
         while (PrintBuf == 0x0)
         {
-            ;
-            //   sys_Sleep();
+            sys_Sleep();
         }
         while (PrintBuf[0])
         {
@@ -33,8 +32,7 @@ void print(char *msg)
     // return;
     while (PrintBuf != 0x0)
     {
-        ;
-        // sys_Sleep();
+        sys_Sleep();
     }
 
     PrintBuf = msg;

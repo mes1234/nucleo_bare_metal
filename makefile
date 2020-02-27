@@ -28,6 +28,7 @@ build_debug: clean
 	$(CC) $(CFLAGS) src/main.c -o obj/main.o
 	$(CC) $(CFLAGS) src/kernel.c -o obj/kernel.o
 	$(CC) $(CFLAGS) src/print.c -o obj/print.o
+	$(CC) $(CFLAGS) src/handlers.c -o obj/handlers.o
 	arm-none-eabi-as -mcpu=cortex-m3 -mthumb -o obj/startup.o $(STARTUP)/startup_stm32f10x_md.s
 	arm-none-eabi-ld -Tstartup/stm32.ld -o exec/main.elf obj/*.o
 	arm-none-eabi-objcopy -O binary exec/main.elf exec/main.bin

@@ -22,6 +22,9 @@ void _exit(int status)
 #include "main.h"
 #include "print.h"
 
+#define SLEEP_PERIOD 700000
+#define SLEEP_LED 300000
+
 ThreadControlBlock threads[THREAD_COUNT_MAX];
 
 /* Main program. */
@@ -31,13 +34,15 @@ int main(void)
   char *arglist2[] = {"f", "def", "ss"};
   SystemInit();
   InitThreads();
-  setupLED();
-  // CreateTask(idle_task, ARGV_SIZE(arglist), arglist);
+  
   CreateTask(startup, ARGV_SIZE(arglist), arglist);
   CreateTask(S_print, ARGV_SIZE(arglist), arglist);
-  CreateTask(task2, ARGV_SIZE(arglist), arglist);
   CreateTask(task1, ARGV_SIZE(arglist), arglist);
-
+  CreateTask(task2, ARGV_SIZE(arglist), arglist);
+  CreateTask(task3, ARGV_SIZE(arglist), arglist);
+  CreateTask(task4, ARGV_SIZE(arglist), arglist);
+  CreateTask(task5, ARGV_SIZE(arglist), arglist);
+  CreateTask(task6, ARGV_SIZE(arglist), arglist);
   RunOS();
   while (1)
   {
@@ -46,22 +51,12 @@ int main(void)
   }
 }
 
-void setupLED()
-{
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_StructInit(&GPIO_InitStructure);
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
-}
+
 
 int startup(int argc, char *argv[])
 {
+  sys_SetupLED();
   sys_StartUart();
-  // print("\n\nWKOSss_started_!\n\n");
-  // print("\n\n###_START_###\n\n");
   return;
 }
 
@@ -71,31 +66,78 @@ int task1(int argc, char *argv[])
 uint32_t val = 0;
   while (1)
   {
-    while (val < 350000)
+    while (val < SLEEP_PERIOD)
     {
       val = val + 1;
+      // sys_Sleep();
     }
-    print("idling\n");
+    print("task1\n");
     val = 0;
   }
 }	
 	
-
-
-int idle_task(int argc, char *argv[])
-{
-  print("idle\n");
-  while (1)
-  {
-    ;
-    // print("idling");
-    // sys_Sleep();
-  }
-}
-
 int task2(int argc, char *argv[])
 {
-  print("t2\n");
+uint32_t val = 0;
+  while (1)
+  {
+    while (val < SLEEP_PERIOD)
+    {
+      val = val + 1;
+      // sys_Sleep();
+    }
+    print("task2\n");
+    val = 0;
+  }
+}	
+
+int task3(int argc, char *argv[])
+{
+uint32_t val = 0;
+  while (1)
+  {
+    while (val < SLEEP_PERIOD)
+    {
+      val = val + 1;
+      // sys_Sleep();
+    }
+    print("task3\n");
+    val = 0;
+  }
+}	
+
+int task4(int argc, char *argv[])
+{
+uint32_t val = 0;
+  while (1)
+  {
+    while (val < SLEEP_PERIOD)
+    {
+      val = val + 1;
+      // sys_Sleep();
+    }
+    print("task4\n");
+    val = 0;
+  }
+}	
+
+int task5(int argc, char *argv[])
+{
+uint32_t val = 0;
+  while (1)
+  {
+    while (val < SLEEP_PERIOD)
+    {
+      val = val + 1;
+      // sys_Sleep();
+    }
+    print("task5\n");
+    val = 0;
+  }
+}	
+
+int task6(int argc, char *argv[])
+{
   char *f1 = argv[0];
   char *f2 = argv[1];
 
@@ -103,20 +145,20 @@ int task2(int argc, char *argv[])
   uint32_t val = 0;
   while (1)
   {
-    while (val < 350000)
+    while (val < SLEEP_LED)
     {
       val = val + 1;
+      // sys_Sleep();
     }
     val = 0;
     sys_SetLED();
-    print("On\n");
-    while (val < 350000)
+    while (val < SLEEP_LED)
     {
       val = val + 1;
+      // sys_Sleep();
     }
     val = 0;
     sys_ResetLED();
-    print("Off\n");
   }
   return;
 }

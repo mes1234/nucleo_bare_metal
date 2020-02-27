@@ -1,7 +1,7 @@
 #include <stdint.h>
 
 #define ARGV_SIZE(arr)  sizeof(arr)/sizeof(arr[0])
-#define THREAD_COUNT_MAX 6
+#define THREAD_COUNT_MAX 9
 #define PSP_SIZE 0x200
 #define SVC(code) asm volatile("svc %[immediate]" ::[immediate] "I"(code))
 #define ScheduleContextSwitch() SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk; // Set PendSV to pending
@@ -9,6 +9,7 @@
 #define sys_SetLED() SVC(110);
 #define sys_ResetLED() SVC(109);
 #define sys_StartUart() SVC(112);
+#define sys_SetupLED() SVC(113);
 #define BackupSoftwareStack() asm volatile("MRS   r0,  psp      \n\t" \
                                            "STMDB r0!, {r4-r11} \n\t");
 #define RestoreSoftwareStack() asm volatile("MRS   r0,  psp      \n\t" \
