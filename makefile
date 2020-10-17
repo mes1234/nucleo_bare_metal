@@ -33,6 +33,6 @@ build_debug: clean
 clean:
 	@echo
 	@echo "Running target clean"
-	del /f *.o
-	del /f *.elf
-	del /f *.bin
+	# del /f *.o
+	# del /f *.elf
+	# del /f *.bin

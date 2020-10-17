@@ -19,6 +19,7 @@ void _exit(int status)
 #include "core_cm3.h"
 #include "kernel.h"
 #include "main.h"
+#include "ssd1306.h"
 
 ThreadControlBlock threads[THREAD_COUNT_MAX];
 
@@ -28,6 +29,8 @@ int main(void)
   char *arglist[] = {"a", "ff"};
   char *arglist2[] = {"f", "def", "ss"};
   SystemInit();
+  ssd1306_Init();
+  ssd1306_Fill(SSD1306_COLOR.White);
   InitThreads();
   setupLED();
   CreateTask(task2, ARGV_SIZE(arglist), arglist);

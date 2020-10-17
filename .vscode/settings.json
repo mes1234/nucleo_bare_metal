@@ -1,11 +1,13 @@
 {
     "python.pythonPath": "pyocd/bin/python3",
     "C_Cpp.default.includePath": [
-        "lib/**",
-        "src/**",
-        "inc/**",
-        "/home/witek/CODE/arm/gnu/lib/gcc/arm-none-eabi/8.3.1/include/**",
-        "/home/witek/CODE/arm/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/**"
+        "lib\\**",
+        "src\\**",
+        "inc\\**",
+        "src\\ssd1306\\**",
+        "C:\\Program Files (x86)\\GNU Arm Embedded Toolchain\\9 2020-q2-update\\lib\\gcc\\arm-none-eabi\\9.3.1\\include**",
+        "C:\\Users\\witol\\Documents\\CODE\\arm\\yaos\\STM32CubeF1\\Drivers\\**",
+        "C:\\Users\\witol\\Documents\\CODE\\arm\\yaos\\STM32F10x_StdPeriph_Lib_V3.5.0\\Libraries\\**"
     ],
     "files.associations": {
         "stm32f10x.h": "c",

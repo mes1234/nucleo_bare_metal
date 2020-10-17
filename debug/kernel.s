@@ -21,7 +21,7 @@
 	.type	__ISB, %function
 __ISB:
 .LFB8:
-	.file 1 "/home/witek/CODE/arm/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/CMSIS/CM3/CoreSupport/core_cm3.h"
+	.file 1 "C:\\Users\\witol\\Documents\\CODE\\arm\\yaos\\STM32F10x_StdPeriph_Lib_V3.5.0\\Libraries\\CMSIS\\CM3\\CoreSupport/core_cm3.h"
 	.loc 1 1214 51
 	.cfi_startproc
 	@ args = 0, pretend = 0, frame = 0
@@ -34,10 +34,10 @@ __ISB:
 	.cfi_def_cfa_register 7
 	.loc 1 1214 53
 	.syntax unified
-@ 1214 "/home/witek/CODE/arm/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/CMSIS/CM3/CoreSupport/core_cm3.h" 1
+@ 1214 "C:\Users\witol\Documents\CODE\arm\yaos\STM32F10x_StdPeriph_Lib_V3.5.0\Libraries\CMSIS\CM3\CoreSupport/core_cm3.h" 1
 	isb
 @ 0 "" 2
-	.loc 1 1214 1
+	.loc 1 1214 77
 	.thumb
 	.syntax unified
 	nop
@@ -215,7 +215,7 @@ SysTick_Config:
 	.type	SelectNextTask, %function
 SelectNextTask:
 .LFB29:
-	.file 2 "src/kernel.c"
+	.file 2 "src\\kernel.c"
 	.loc 2 10 1
 	.cfi_startproc
 	@ args = 0, pretend = 0, frame = 0
@@ -293,6 +293,7 @@ SelectNextTask:
 	cmp	r3, #2
 	beq	.L15
 	.loc 2 20 1
+	nop
 	nop
 	mov	sp, r7
 	.cfi_def_cfa_register 13
@@ -456,8 +457,9 @@ CreateTask:
 	.loc 2 25 5 discriminator 1
 	cmp	r3, #4
 	bls	.L23
-.L22:
 	.loc 2 43 1
+	nop
+.L22:
 	nop
 	adds	r7, r7, #28
 	.cfi_def_cfa_offset 4
@@ -513,7 +515,7 @@ RunOS:
 	.loc 2 50 5
 	movs	r3, #3
 	.syntax unified
-@ 50 "src/kernel.c" 1
+@ 50 "src\kernel.c" 1
 	MSR control, r3
 @ 0 "" 2
 	.loc 2 53 5
@@ -555,7 +557,7 @@ CloseThread:
 	.cfi_def_cfa_register 7
 	.loc 2 61 5
 	.syntax unified
-@ 61 "src/kernel.c" 1
+@ 61 "src\kernel.c" 1
 	svc #0
 @ 0 "" 2
 	.thumb
@@ -597,10 +599,11 @@ InitThreads:
 	.loc 2 72 5
 	b	.L33
 .L34:
-	.loc 2 74 41 discriminator 3
+	.loc 2 74 36 discriminator 3
 	ldr	r3, .L35
 	ldr	r3, [r3]
 	adds	r3, r3, #1
+	.loc 2 74 41 discriminator 3
 	lsls	r3, r3, #8
 	.loc 2 74 17 discriminator 3
 	ldr	r2, [r7, #4]
@@ -719,6 +722,7 @@ InitThreads:
 	bls	.L34
 	.loc 2 81 1
 	nop
+	nop
 	adds	r7, r7, #8
 	.cfi_def_cfa_offset 8
 	mov	sp, r7
@@ -754,7 +758,7 @@ PendSV_Handler:
 	.cfi_def_cfa_register 7
 	.loc 2 84 5
 	.syntax unified
-@ 84 "src/kernel.c" 1
+@ 84 "src\kernel.c" 1
 	MRS   r0,  psp      
 	STMDB r0!, {r4-r11} 
 	
@@ -793,7 +797,7 @@ PendSV_Handler:
 	ldr	r3, .L41
 	ldr	r2, [r3]
 	.syntax unified
-@ 88 "src/kernel.c" 1
+@ 88 "src\kernel.c" 1
 	mrs r1, psp 
 	
 @ 0 "" 2
@@ -877,7 +881,7 @@ PendSV_Handler:
 	adds	r3, r3, #4
 	ldr	r3, [r3]
 	.syntax unified
-@ 96 "src/kernel.c" 1
+@ 96 "src\kernel.c" 1
 	msr psp, r3 
 	
 @ 0 "" 2
@@ -898,7 +902,7 @@ PendSV_Handler:
 	strb	r2, [r3]
 	.loc 2 98 9
 	.syntax unified
-@ 98 "src/kernel.c" 1
+@ 98 "src\kernel.c" 1
 	MRS   r0,  psp      
 	LDMIA r0!, {r4-r11} 
 	
@@ -935,7 +939,7 @@ PendSV_Handler:
 	add	r3, r3, r1
 	ldr	r3, [r3]
 	.syntax unified
-@ 105 "src/kernel.c" 1
+@ 105 "src\kernel.c" 1
 	msr psp, r3 
 	
 @ 0 "" 2
@@ -1026,24 +1030,28 @@ SVC_Handler:
 	.cfi_def_cfa_register 7
 	.loc 2 119 18
 	bl	GetSvcNumber
-	mov	r2, r0
+	mov	r3, r0
 	.loc 2 119 16
-	ldr	r3, .L54
-	str	r2, [r3]
+	ldr	r2, .L54
+	str	r3, [r2]
 	.loc 2 120 5
 	ldr	r3, .L54
 	ldr	r3, [r3]
-	cmp	r3, #1
+	cmp	r3, #110
 	beq	.L47
-	cmp	r3, #0
-	beq	.L48
+	cmp	r3, #110
+	bhi	.L53
 	cmp	r3, #109
 	beq	.L49
-	cmp	r3, #110
+	cmp	r3, #109
+	bhi	.L53
+	cmp	r3, #0
 	beq	.L50
+	cmp	r3, #1
+	beq	.L51
 	.loc 2 141 9
 	b	.L53
-.L48:
+.L50:
 	.loc 2 124 33
 	ldr	r3, .L54+4
 	ldr	r2, [r3]
@@ -1067,7 +1075,7 @@ SVC_Handler:
 	str	r3, [r2, #4]
 	.loc 2 127 9
 	b	.L52
-.L47:
+.L51:
 	.loc 2 130 9
 	bl	SelectNextTask
 	.loc 2 131 9
@@ -1086,7 +1094,7 @@ SVC_Handler:
 	bl	GPIO_WriteBit
 	.loc 2 136 9
 	b	.L52
-.L50:
+.L47:
 	.loc 2 139 9
 	movs	r2, #1
 	movs	r1, #32
@@ -1136,7 +1144,7 @@ GetSvcNumber:
 	str	r3, [r7, #4]
 	.loc 2 148 5
 	.syntax unified
-@ 148 "src/kernel.c" 1
+@ 148 "src\kernel.c" 1
 	MRS R0, PSP
 	MOV r3, R0
 @ 0 "" 2
@@ -1165,12 +1173,12 @@ GetSvcNumber:
 .LFE37:
 	.size	GetSvcNumber, .-GetSvcNumber
 .Letext0:
-	.file 3 "/home/witek/CODE/arm/gnu/arm-none-eabi/include/machine/_default_types.h"
-	.file 4 "/home/witek/CODE/arm/gnu/arm-none-eabi/include/sys/_stdint.h"
-	.file 5 "/home/witek/CODE/arm/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h"
-	.file 6 "/home/witek/CODE/arm/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h"
-	.file 7 "./inc/kernel.h"
-	.file 8 "/home/witek/CODE/arm/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/STM32F10x_StdPeriph_Driver/inc/stm32f10x_gpio.h"
+	.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\9 2020-q2-update\\arm-none-eabi\\include\\machine\\_default_types.h"
+	.file 4 "c:\\program files (x86)\\gnu arm embedded toolchain\\9 2020-q2-update\\arm-none-eabi\\include\\sys\\_stdint.h"
+	.file 5 "C:\\Users\\witol\\Documents\\CODE\\arm\\yaos\\STM32F10x_StdPeriph_Lib_V3.5.0\\Libraries\\CMSIS\\CM3\\DeviceSupport\\ST\\STM32F10x/stm32f10x.h"
+	.file 6 "C:\\Users\\witol\\Documents\\CODE\\arm\\yaos\\STM32F10x_StdPeriph_Lib_V3.5.0\\Libraries\\CMSIS\\CM3\\DeviceSupport\\ST\\STM32F10x/system_stm32f10x.h"
+	.file 7 ".\\inc/kernel.h"
+	.file 8 "C:\\Users\\witol\\Documents\\CODE\\arm\\yaos\\STM32F10x_StdPeriph_Lib_V3.5.0\\Libraries\\STM32F10x_StdPeriph_Driver\\inc/stm32f10x_gpio.h"
 	.section	.debug_info,"",%progbits
 .Ldebug_info0:
 	.4byte	0x904
@@ -3107,8 +3115,6 @@ GetSvcNumber:
 	.ascii	"EXTI15_10_IRQn\000"
 .LASF122:
 	.ascii	"task_id_adder\000"
-.LASF31:
-	.ascii	"EXTI2_IRQn\000"
 .LASF135:
 	.ascii	"GetSvcNumber\000"
 .LASF21:
@@ -3155,10 +3161,6 @@ GetSvcNumber:
 	.ascii	"new_psp\000"
 .LASF80:
 	.ascii	"CPUID\000"
-.LASF145:
-	.ascii	"GNU C17 8.3.1 20190703 (release) [gcc-8-branch revi"
-	.ascii	"sion 273027] -mcpu=cortex-m3 -mthumb -mfloat-abi=so"
-	.ascii	"ft -march=armv7-m -ggdb -O0\000"
 .LASF136:
 	.ascii	"CreateTask\000"
 .LASF138:
@@ -3173,8 +3175,8 @@ GetSvcNumber:
 	.ascii	"SVC_Handler\000"
 .LASF142:
 	.ascii	"SelectNextTask\000"
-.LASF147:
-	.ascii	"/home/witek/CODE/arm/test_gnu\000"
+.LASF31:
+	.ascii	"EXTI2_IRQn\000"
 .LASF143:
 	.ascii	"ticks\000"
 .LASF56:
@@ -3191,12 +3193,18 @@ GetSvcNumber:
 	.ascii	"TIM3_IRQn\000"
 .LASF34:
 	.ascii	"DMA1_Channel1_IRQn\000"
+.LASF147:
+	.ascii	"C:\\Users\\witol\\Documents\\CODE\\arm\\yaos\\nucle"
+	.ascii	"o_bare_metal\000"
 .LASF12:
 	.ascii	"uint8_t\000"
 .LASF134:
 	.ascii	"status\000"
 .LASF30:
 	.ascii	"EXTI1_IRQn\000"
+.LASF145:
+	.ascii	"GNU C17 9.3.1 20200408 (release) -mcpu=cortex-m3 -m"
+	.ascii	"thumb -mfloat-abi=soft -march=armv7-m -ggdb -O0\000"
 .LASF132:
 	.ascii	"InitThreads\000"
 .LASF65:
@@ -3287,8 +3295,6 @@ GetSvcNumber:
 	.ascii	"TIM1_CC_IRQn\000"
 .LASF128:
 	.ascii	"current_msp\000"
-.LASF146:
-	.ascii	"src/kernel.c\000"
 .LASF3:
 	.ascii	"__uint8_t\000"
 .LASF79:
@@ -3301,6 +3307,8 @@ GetSvcNumber:
 	.ascii	"TIM1_TRG_COM_IRQn\000"
 .LASF102:
 	.ascii	"GPIO_TypeDef\000"
+.LASF146:
+	.ascii	"src\\kernel.c\000"
 .LASF82:
 	.ascii	"VTOR\000"
 .LASF55:
@@ -3369,4 +3377,4 @@ GetSvcNumber:
 	.ascii	"LCKR\000"
 .LASF64:
 	.ascii	"RTCAlarm_IRQn\000"
-	.ident	"GCC: (GNU Tools for Arm Embedded Processors 8-2019-q3-update) 8.3.1 20190703 (release) [gcc-8-branch revision 273027]"
+	.ident	"GCC: (GNU Arm Embedded Toolchain 9-2020-q2-update) 9.3.1 20200408 (release)"
